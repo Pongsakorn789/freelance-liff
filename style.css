@@ -1,32 +1,50 @@
-/* General Body Styles */
+/* --- Global Styles --- */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #06C755;
+    --text-primary: #1c1e21;
+    --text-secondary: #65676b;
+    --background-light: #f0f2f5;
+    --background-white: #ffffff;
+    --border-color: #e0e2e7;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
-    background-color: #f0f2f5;
-    color: #1c1e21;
+    background-color: var(--background-light);
+    color: var(--text-primary);
 }
 
 .container {
-    padding: 15px;
-    padding-bottom: 80px;
+    padding: 20px;
+    padding-bottom: 90px;
 }
 
-h1, h2 {
-    color: #06C755;
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
-/* Page Control */
-.page {
-    display: none;
-}
-.page.active {
-    display: block;
-}
-#main-app {
-    display: none;
+h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-/* Role Selection Page */
+/* --- Page Control --- */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+#main-app { display: none; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Role Selection Page --- */
 .role-container {
     display: flex;
     flex-direction: column;
@@ -37,23 +55,17 @@ h1, h2 {
     box-sizing: border-box;
     text-align: center;
 }
-.main-logo {
-    width: 60px;
-    margin-bottom: 15px;
-}
-.role-container h1 {
-    font-size: 24px;
-    margin-bottom: 30px;
-}
+.main-logo { width: 60px; margin-bottom: 15px; }
+.role-container h1 { font-size: 24px; margin-bottom: 40px; }
 .brand-highlight {
-    background-color: #e0e0e0;
+    background-color: #e8e8e8;
     color: #333;
     padding: 4px 12px;
     border-radius: 16px;
-    font-weight: normal;
+    font-weight: 500;
 }
 .role-button {
-    background-color: #06C755;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 20px;
@@ -62,44 +74,68 @@ h1, h2 {
     max-width: 300px;
     margin-bottom: 20px;
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.role-button h2 {
-    color: white;
-    margin: 0 0 10px 0;
+.role-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.2);
 }
-.role-button img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+.role-button h2 { color: white; margin: 0 0 10px 0; font-weight: 600; }
+.role-button img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.5); }
+
+/* --- Bottom Navigation Bar --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--background-white);
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    padding: 10px 0;
+    padding-bottom: env(safe-area-inset-bottom); /* For iPhone X and newer */
+    z-index: 1000;
+}
+.bottom-nav button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s ease;
+}
+.bottom-nav button.active {
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
-/* Search Page Styles */
-.search-container {
-    margin-bottom: 20px;
-}
+/* --- Search Page & Freelancer Card --- */
+.search-container { margin-bottom: 20px; }
 #search-box {
     width: 100%;
-    padding: 12px 20px;
+    padding: 14px 20px;
     font-size: 16px;
     border-radius: 25px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     box-sizing: border-box;
+    background-color: var(--background-white);
 }
-.loader {
-    text-align: center;
-    padding: 20px;
-    color: #65676b;
-}
-
-/* Freelancer Card Styles */
 .freelancer-card {
-    background-color: #fff;
-    border-radius: 12px;
+    background-color: var(--background-white);
+    border-radius: 16px;
     padding: 15px;
     margin-bottom: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.freelancer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 .freelancer-card img {
     width: 60px;
@@ -108,96 +144,50 @@ h1, h2 {
     margin-right: 15px;
     object-fit: cover;
 }
-.freelancer-info h3 {
-    margin: 0 0 5px 0;
-    font-size: 18px;
-    color: #1c1e21;
-}
-.freelancer-info p {
-    margin: 0;
-    font-size: 14px;
-    color: #65676b;
-}
+.freelancer-info h3 { margin: 0 0 5px 0; font-size: 18px; color: var(--text-primary); }
+.freelancer-info p { margin: 0; font-size: 14px; color: var(--text-secondary); }
 .portfolio-btn {
     display: inline-block;
     margin-top: 10px;
     text-decoration: none;
-    color: #06C755;
-    font-weight: bold;
+    color: var(--primary-color);
+    font-weight: 600;
     font-size: 14px;
 }
 
-/* Bottom Navigation Bar */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    padding: 10px 0;
-    z-index: 1000;
-}
-.bottom-nav button {
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #888;
-    cursor: pointer;
-    padding: 5px 10px;
-}
-.bottom-nav button.active {
-    color: #06C755;
-    font-weight: bold;
-}
-
-/* Profile Page Styles */
-.profile-header {
-    text-align: center;
-    padding: 20px 0;
-}
+/* --- Profile Page --- */
+.profile-header { text-align: center; padding: 20px 0; }
 #profile-picture {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 4px solid var(--background-white);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-#profile-name {
-    margin-top: 15px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
+#profile-name { margin-top: 15px; font-size: 24px; font-weight: 600; }
 .profile-section {
-    background-color: #fff;
-    border-radius: 12px;
+    background-color: var(--background-white);
+    border-radius: 16px;
     padding: 20px;
     margin-top: 20px;
+    border: 1px solid var(--border-color);
 }
-.profile-section h3 {
-    margin-top: 0;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    color: #333;
-}
+.profile-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
 
-/* Home / Jobboard Page Styles */
+/* --- Home / Jobboard Page --- */
 .post-card {
     background: linear-gradient(135deg, #06C755, #00B900);
     color: white;
     padding: 25px;
-    border-radius: 15px;
+    border-radius: 16px;
     text-align: center;
     margin: 20px 0;
-    box-shadow: 0 4px 15px rgba(6, 199, 85, 0.4);
+    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
 }
 #post-job-button {
-    background-color: #fff;
-    color: #06C755;
+    background-color: var(--background-white);
+    color: var(--primary-color);
     border: none;
     padding: 12px 40px;
     border-radius: 25px;
@@ -205,36 +195,28 @@ h1, h2 {
     font-weight: bold;
     cursor: pointer;
     margin-top: 15px;
+    transition: transform 0.2s;
 }
+#post-job-button:hover { transform: scale(1.05); }
 
-/* Chat Page Mockup Styles */
-.chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+/* --- Chat Page --- */
 .chat-item {
-    background-color: #fff;
-    border-radius: 12px;
+    background-color: var(--background-white);
+    border-radius: 16px;
     padding: 15px;
     display: flex;
     align-items: center;
     gap: 15px;
+    border: 1px solid var(--border-color);
 }
-.chat-item img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.chat-info {
-    flex-grow: 1;
-}
+.chat-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+.chat-info { flex-grow: 1; }
 .contact-btn {
-    background-color: #06C755;
+    background-color: var(--primary-color);
     color: white;
     text-decoration: none;
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 14px;
+    font-weight: 500;
 }
