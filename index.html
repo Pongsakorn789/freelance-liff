@@ -6,76 +6,96 @@
     <title>LINE Freelance</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ซ่อนทุกหน้าไว้ก่อนเป็นค่าเริ่มต้น */
         .page { display: none; }
-        /* แสดงหน้าแรกที่ถูกกำหนดไว้ */
         .page.active { display: block; }
+        #main-app { display: none; } 
     </style>
 </head>
 <body>
-    <main class="container">
-        <div id="page-home" class="page">
-            <h1>Jobboard</h1>
-            <p>Let's post!!!</p>
-            <div class="post-card">
-                <p>Start your project now.<br>Find trusted Freelancers ready to help.</p>
-                <button id="post-job-button">Post !</button>
-            </div>
-            <h2>My Jobs</h2>
-            <div id="my-jobs-list">
-                </div>
+    <div id="page-role-selection" class="page active">
+        <div class="role-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/LINE_New_App_Icon_%282020-12-07%29.png" alt="LINE Logo" class="main-logo">
+            <h1>LINE <span class="brand-highlight">FREELANCE</span></h1>
+            
+            <button class="role-button" id="client-button">
+                <h2>Client</h2>
+                <img src="https://i.imgur.com/w2EMdI5.png" alt="Client Avatar">
+            </button>
+            
+            <button class="role-button" id="freelancer-button">
+                <h2>Freelancer</h2>
+                <img src="https://i.imgur.com/8Q5kF8X.png" alt="Freelancer Avatar">
+            </button>
         </div>
+    </div>
 
-        <div id="page-search" class="page active">
-            <h1>ค้นหาฟรีแลนซ์</h1>
-            <p id="user-greeting"></p>
-            <div class="search-container">
-                <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ...">
+    <div id="main-app">
+        <main class="container">
+            <div id="page-home" class="page">
+                <h1>Jobboard</h1>
+                <p>Let's post!!!</p>
+                <div class="post-card">
+                    <p>Start your project now.<br>Find trusted Freelancers ready to help.</p>
+                    <button id="post-job-button">Post !</button>
+                </div>
+                <h2>My Jobs</h2>
+                <div id="my-jobs-list">
+                    <p>You haven't posted any jobs yet.</p>
+                </div>
             </div>
-            <div id="freelancer-list">
-                <div class="loader">กำลังโหลดข้อมูล...</div>
+
+            <div id="page-search" class="page active">
+                <h1>ค้นหาฟรีแลนซ์</h1>
+                <p id="user-greeting">กำลังโหลด...</p>
+                <div class="search-container">
+                    <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ...">
+                </div>
+                <div id="freelancer-list">
+                    <div class="loader">กำลังโหลดข้อมูล...</div>
+                </div>
             </div>
-        </div>
-        
-        <div id="page-chat" class="page">
-            <h1>Chats</h1>
-            <div class="chat-list">
-                <div class="chat-item">
-                    <img src="URL_รูปสมชาย" alt="สมชาย">
-                    <div class="chat-info">
-                        <strong>สมชาย เก่งมาก</strong>
-                        <p>สถานะ: รอตอบกลับ</p>
+            
+            <div id="page-chat" class="page">
+                <h1>Chats</h1>
+                <div class="chat-list">
+                    <div class="chat-item">
+                        <img src="https://i.imgur.com/w2EMdI5.png" alt="สมชาย">
+                        <div class="chat-info">
+                            <strong>สมชาย เก่งมาก</strong>
+                            <p>สถานะ: รอตอบกลับ</p>
+                        </div>
+                        <a href="#" class="contact-btn">คุยต่อ</a>
                     </div>
-                    <a href="line://app/LIFF_ID?freelancerId=USER_ID_สมชาย" class="contact-btn">คุยต่อ</a>
                 </div>
             </div>
-        </div>
 
-        <div id="page-profile" class="page">
-            <h1>Profile</h1>
-            <div class="profile-header">
-                <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
-                <h2 id="profile-name">Loading...</h2>
-            </div>
-            <div class="profile-section">
-                <h3>Hiring History</h3>
-                <div id="hiring-history">
-                    <p>2025 - Small Project</p>
+            <div id="page-profile" class="page">
+                <h1>Profile</h1>
+                <div class="profile-header">
+                    <img id="profile-picture" src="https://via.placeholder.com/120" alt="Profile Picture">
+                    <h2 id="profile-name">Loading...</h2>
+                </div>
+                <div class="profile-section">
+                    <h3>Hiring History</h3>
+                    <div id="hiring-history">
+                        <p>ยังไม่มีประวัติการจ้างงาน</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-
-    <nav class="bottom-nav">
-        <button data-page="page-home">🏠 Home</button>
-        <button data-page="page-search" class="active">🔍 Search</button>
-        <button data-page="page-chat">💬 Chat</button>
-        <button data-page="page-profile">👤 Profile</button>
-    </nav>
+        </main>
+        
+        <nav class="bottom-nav">
+            <button data-page="page-home">🏠 Home</button>
+            <button data-page="page-search" class="active">🔍 Search</button>
+            <button data-page="page-chat">💬 Chat</button>
+            <button data-page="page-profile">👤 Profile</button>
+        </nav>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
+      // !!! สำคัญ: แก้เป็น firebaseConfig ของคุณ !!!
       const firebaseConfig = {
   apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
   authDomain: "freelance-hackathon.firebaseapp.com",
