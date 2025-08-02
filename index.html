@@ -12,28 +12,30 @@
     </style>
 </head>
 <body>
+    <!-- หน้าเลือก Role (แสดงเป็นหน้าแรก) -->
     <div id="page-role-selection" class="page active">
         <div class="role-container">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/LINE_New_App_Icon_%282020-12-07%29.png" alt="LINE Logo" class="main-logo">
+            <span class="main-logo-emoji">💬</span>
             <h1>LINE <span class="brand-highlight">FREELANCE</span></h1>
             
             <button class="role-button" id="client-button">
                 <h2>Client</h2>
-                <img src="https://i.imgur.com/w2EMdI5.png" alt="Client Avatar">
+                <span class="role-emoji">💼</span>
             </button>
             
             <button class="role-button" id="freelancer-button">
                 <h2>Freelancer</h2>
-                <img src="https://i.imgur.com/8Q5kF8X.png" alt="Freelancer Avatar">
+                <span class="role-emoji">🎨</span>
             </button>
         </div>
     </div>
 
+    <!-- แอปหลัก (จะถูกแสดงหลังจากเลือก Role) -->
     <div id="main-app">
         <main class="container">
+            <!-- หน้า Home -->
             <div id="page-home" class="page">
                 <h1>Jobboard</h1>
-                <p>Let's post!!!</p>
                 <div class="post-card">
                     <p>Start your project now.<br>Find trusted Freelancers ready to help.</p>
                     <button id="post-job-button">Post !</button>
@@ -44,9 +46,9 @@
                 </div>
             </div>
 
+            <!-- หน้า Search -->
             <div id="page-search" class="page active">
                 <h1>ค้นหาฟรีแลนซ์</h1>
-                <p id="user-greeting">กำลังโหลด...</p>
                 <div class="search-container">
                     <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ...">
                 </div>
@@ -55,35 +57,47 @@
                 </div>
             </div>
             
+            <!-- หน้า Chat List -->
             <div id="page-chat" class="page">
                 <h1>Chats</h1>
-                <div class="chat-list">
-                    <div class="chat-item">
-                        <img src="https://i.imgur.com/w2EMdI5.png" alt="สมชาย">
-                        <div class="chat-info">
-                            <strong>สมชาย เก่งมาก</strong>
-                            <p>สถานะ: รอตอบกลับ</p>
-                        </div>
-                        <a href="#" class="contact-btn">คุยต่อ</a>
-                    </div>
+                <div id="chat-list-container" class="chat-list">
+                    <!-- รายการแชทจะถูกสร้างโดย JavaScript -->
                 </div>
             </div>
 
+            <!-- หน้า Profile -->
             <div id="page-profile" class="page">
                 <h1>Profile</h1>
-                <div class="profile-header">
-                    <img id="profile-picture" src="https://via.placeholder.com/120" alt="Profile Picture">
-                    <h2 id="profile-name">Loading...</h2>
+                <!-- โครงสร้างตามสไลด์ -->
+                <section id="profile-display">
+                    <img id="pictureUrl" src="https://via.placeholder.com/120">
+                    <h2 id="displayName">Loading...</h2>
+                    <p id="statusMessage"><b>Status:</b> </p>
+                    <hr>
+                    <p id="userId"><b>User ID:</b> </p>
+                    <p id="email"><b>Email:</b> (ต้องการการอนุญาต)</p>
+                </section>
+            </div>
+
+            <!-- หน้าจำลองห้องแชท (ซ่อนไว้) -->
+            <div id="page-chat-room" class="page">
+                <div class="chat-room-header">
+                    <button id="back-to-chat-list"> &lt; Back</button>
+                    <h2 id="chat-with-name">Chat Room</h2>
                 </div>
-                <div class="profile-section">
-                    <h3>Hiring History</h3>
-                    <div id="hiring-history">
-                        <p>ยังไม่มีประวัติการจ้างงาน</p>
-                    </div>
+                <div class="chat-messages">
+                    <div class="message received">Hey! Sure, what kind of project is it?</div>
+                    <div class="message sent">It's a simple tool for organizing tasks. My budget is around 7,500 THB.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" placeholder="Type a message...">
+                    <button>Send</button>
                 </div>
             </div>
+
         </main>
         
+        <!-- แถบเมนูนำทางด้านล่าง -->
         <nav class="bottom-nav">
             <button data-page="page-home">🏠 Home</button>
             <button data-page="page-search" class="active">🔍 Search</button>
@@ -92,6 +106,7 @@
         </nav>
     </div>
 
+    <!-- Script ทั้งหมด -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
