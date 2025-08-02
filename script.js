@@ -1,5 +1,5 @@
 // !!! สำคัญ: แก้เป็น LIFF ID ของคุณ !!!
-const liffId = "YOUR_LIFF_ID"; 
+const liffId = "2007867348-j6VyLzkW"; 
 let allFreelancers = [];
 
 // --- ส่วนควบคุมการเลือก Role และการเปลี่ยนหน้า ---
