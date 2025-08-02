@@ -6,9 +6,10 @@
     <title>LINE Freelance</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .page { display: none; }
+        /* ซ่อนทุกอย่างไว้ก่อน ยกเว้นหน้าเลือก Role */
+        .page, #client-app, #freelancer-app { display: none; }
         .page.active { display: block; }
-        #main-app { display: none; } 
+        #page-role-selection { display: block; } /* แสดงหน้าเลือก Role เป็นค่าเริ่มต้น */
     </style>
 </head>
 <body>
@@ -17,12 +18,10 @@
         <div class="role-container">
             <span class="main-logo-emoji">💬</span>
             <h1>LINE <span class="brand-highlight">FREELANCE</span></h1>
-            
             <button class="role-button" id="client-button">
                 <h2>Client</h2>
                 <span class="role-emoji">💼</span>
             </button>
-            
             <button class="role-button" id="freelancer-button">
                 <h2>Freelancer</h2>
                 <span class="role-emoji">🎨</span>
@@ -30,105 +29,90 @@
         </div>
     </div>
 
-    <!-- แอปหลัก (จะถูกแสดงหลังจากเลือก Role) -->
-    <div id="main-app">
+    <!-- =============== แอปฝั่งผู้จ้าง (Client) =============== -->
+    <div id="client-app">
         <main class="container">
-            <!-- หน้า Home -->
-            <div id="page-home" class="page active">
+            <div id="page-client-home" class="page active">
                 <h1>Jobboard</h1>
                 <div class="post-card">
                     <p>Start your project now.<br>Find trusted Freelancers ready to help.</p>
-                    <button id="show-post-job-modal-button">Post !</button>
+                    <button id="show-post-job-modal-button">Post a Job!</button>
                 </div>
-                <h2>My Jobs</h2>
-                <div id="my-jobs-list">
-                    <p>You haven't posted any jobs yet.</p>
-                </div>
+                <h2>My Posted Jobs</h2>
+                <div id="my-jobs-list"><div class="loader">Loading jobs...</div></div>
             </div>
-
-            <!-- หน้า Search -->
-            <div id="page-search" class="page">
-                <h1>ค้นหาฟรีแลนซ์</h1>
-                <div class="search-container">
-                    <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ...">
-                </div>
-                <div id="freelancer-list">
-                    <div class="loader">กำลังโหลดข้อมูล...</div>
-                </div>
+            <div id="page-client-search" class="page">
+                <h1>Find Freelancers</h1>
+                <div class="search-container"><input type="text" id="search-box-client" placeholder="ค้นหาทักษะ..."></div>
+                <div id="freelancer-list-client"><div class="loader">Loading freelancers...</div></div>
             </div>
-            
-            <!-- หน้า Chat List -->
-            <div id="page-chat" class="page">
+            <div id="page-client-chat" class="page">
                 <h1>Chats</h1>
-                <div id="chat-list-container" class="chat-list">
-                    <!-- รายการแชทจะถูกสร้างโดย JavaScript -->
-                </div>
+                <div id="chat-list-container-client" class="chat-list"></div>
             </div>
-
-            <!-- หน้า Profile -->
-            <div id="page-profile" class="page">
-                <h1>Profile</h1>
-                <section id="profile-display">
-                    <img id="pictureUrl" src="https://via.placeholder.com/120">
-                    <h2 id="displayName">Loading...</h2>
-                    <p id="statusMessage"><b>Status:</b> </p>
-                    <hr>
-                    <p id="userId"><b>User ID:</b> </p>
-                    <p id="email"><b>Email:</b> (ต้องการการอนุญาต)</p>
-                </section>
-            </div>
-
-            <!-- หน้าจำลองห้องแชท (ซ่อนไว้) -->
-            <div id="page-chat-room" class="page">
-                <div class="chat-room-header">
-                    <button id="back-to-chat-list"> &lt; Back</button>
-                    <h2 id="chat-with-name">Chat Room</h2>
-                </div>
-                <div class="chat-messages">
-                    <div class="message received">Hey! Sure, what kind of project is it?</div>
-                    <div class="message sent">It's a simple tool for organizing tasks. My budget is around 7,500 THB.</div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" placeholder="Type a message...">
-                    <button>Send</button>
-                </div>
+            <div id="page-client-profile" class="page">
+                <h1>My Profile</h1>
+                <section id="profile-display-client"></section>
             </div>
         </main>
-        
-        <!-- แถบเมนูนำทางด้านล่าง -->
-        <nav class="bottom-nav">
-            <button data-page="page-home" class="active">🏠 Home</button>
-            <button data-page="page-search">🔍 Search</button>
-            <button data-page="page-chat">💬 Chat</button>
-            <button data-page="page-profile">👤 Profile</button>
+        <nav class="bottom-nav" id="nav-client">
+            <button data-page="page-client-home" class="active">🏠 Home</button>
+            <button data-page="page-client-search">🔍 Search</button>
+            <button data-page="page-client-chat">💬 Chat</button>
+            <button data-page="page-client-profile">👤 Profile</button>
         </nav>
     </div>
 
-    <!-- Modal สำหรับโพสต์งาน (ซ่อนไว้) -->
+    <!-- =============== แอปฝั่งฟรีแลนซ์ (Freelancer) =============== -->
+    <div id="freelancer-app">
+        <main class="container">
+            <div id="page-freelancer-home" class="page active">
+                <h1>Available Jobs</h1>
+                <div id="all-jobs-list"><div class="loader">Loading jobs...</div></div>
+            </div>
+            <div id="page-freelancer-services" class="page">
+                <h1>My Services</h1>
+                <div class="post-card"><p>Showcase your skills.<br>Post a service to attract clients.</p><button>Post a Service!</button></div>
+                <h2>My Offered Services</h2>
+                <div id="my-services-list"><p>You haven't posted any services yet.</p></div>
+            </div>
+            <div id="page-freelancer-chat" class="page">
+                <h1>Chats</h1>
+                <div id="chat-list-container-freelancer" class="chat-list"></div>
+            </div>
+            <div id="page-freelancer-profile" class="page">
+                <h1>My Profile</h1>
+                <section id="profile-display-freelancer"></section>
+            </div>
+        </main>
+        <nav class="bottom-nav" id="nav-freelancer">
+            <button data-page="page-freelancer-home" class="active">🏠 Jobs</button>
+            <button data-page="page-freelancer-services">✨ Services</button>
+            <button data-page="page-freelancer-chat">💬 Chat</button>
+            <button data-page="page-freelancer-profile">👤 Profile</button>
+        </nav>
+    </div>
+
+    <!-- Modal สำหรับโพสต์งาน -->
     <div id="post-job-modal" class="modal-overlay">
         <div class="modal-content">
-            <button id="close-modal-button" class="close-button">&times;</button>
+            <button class="close-button">&times;</button>
             <h2>Post a New Job</h2>
             <form id="post-job-form">
                 <label for="job-title">Job Title</label>
                 <input type="text" id="job-title" required>
-
                 <label for="job-description">Description</label>
                 <textarea id="job-description" rows="4" required></textarea>
-
                 <label for="job-category">Category</label>
                 <input type="text" id="job-category" placeholder="e.g., Design, Other" required>
-
                 <label for="job-budget">Budget (THB)</label>
                 <input type="number" id="job-budget" required>
-
                 <button type="submit" class="submit-button">Submit Job</button>
             </form>
         </div>
     </div>
 
-
-    <!-- Script ทั้งหมด -->
+    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
