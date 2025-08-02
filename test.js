@@ -1,5 +1,5 @@
 // !!! ใส่ LIFF ID ของคุณที่นี่ !!!
-const liffId = "YOUR_LIFF_ID";
+const liffId = "2007867348-RQ0pAK5j";
 
 async function main() {
     try {
