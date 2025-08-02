@@ -8,23 +8,41 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function main() {
+    console.log("Starting LIFF App...");
     try {
         // 1. เริ่มต้นการทำงานของ LIFF ทันที
         await liff.init({ liffId: liffId });
+        console.log("LIFF Init successful.");
 
-        // 2. หลังจาก LIFF พร้อมแล้ว ค่อยตั้งค่าการทำงานของปุ่ม
-        setupEventListeners();
-
-        // 3. ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง (แต่ยังไม่เริ่มแอปหลัก)
+        // 2. ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง
         if (!liff.isLoggedIn()) {
+            console.log("User not logged in. Redirecting to login...");
             liff.login();
-            return;
+            return; // หยุดการทำงานหลังจากสั่ง login
         }
+        console.log("User is logged in.");
+
+        // 3. โหลดข้อมูลทั้งหมดล่วงหน้า
+        await loadAppData();
+
+        // 4. ตั้งค่าการทำงานของปุ่มต่างๆ
+        setupEventListeners();
 
     } catch (e) {
         console.error('LIFF Initialization failed', e);
         alert('LIFF Initialization failed. Error: ' + JSON.stringify(e));
     }
+}
+
+// --- ฟังก์ชันใหม่: โหลดข้อมูลแอปทั้งหมดล่วงหน้า ---
+async function loadAppData() {
+    console.log("Loading app data...");
+    // ใช้ Promise.all เพื่อให้โหลดข้อมูลโปรไฟล์และฟรีแลนซ์ไปพร้อมๆ กัน
+    await Promise.all([
+        getUserProfile(),
+        fetchFreelancers()
+    ]);
+    console.log("App data loaded.");
 }
 
 // --- ฟังก์ชันสำหรับตั้งค่า Event Listener ทั้งหมด ---
@@ -34,12 +52,10 @@ function setupEventListeners() {
     const clientButton = document.getElementById('client-button');
 
     clientButton.addEventListener('click', () => {
-        // เมื่อกดปุ่ม "ผู้จ้าง"
+        console.log("Client button clicked.");
+        // เมื่อกดปุ่ม "ผู้จ้าง" ให้สลับหน้าอย่างเดียว
         roleSelectionPage.style.display = 'none';
         mainApp.style.display = 'block';
-        
-        // ค่อยเริ่มดึงข้อมูลโปรไฟล์และฟรีแลนซ์
-        startClientApp(); 
     });
 
     const navButtons = document.querySelectorAll('.bottom-nav button');
@@ -58,12 +74,7 @@ function setupEventListeners() {
     if (searchBox) {
         searchBox.addEventListener('input', filterFreelancers);
     }
-}
-
-// --- ฟังก์ชันที่เริ่มการทำงานของแอปฝั่ง Client ---
-function startClientApp() {
-    getUserProfile();
-    fetchFreelancers();
+    console.log("Event listeners setup complete.");
 }
 
 function navigateTo(pageId) {
@@ -88,6 +99,7 @@ async function getUserProfile() {
         if (liff.getDecodedIDToken()) {
             document.getElementById('email').innerHTML = `<b>Email:</b> ${liff.getDecodedIDToken().email}`;
         }
+        console.log("User profile loaded.");
     } catch(err) {
         console.error("Error getting profile:", err);
     }
@@ -102,6 +114,7 @@ async function fetchFreelancers() {
         allFreelancers = Object.values(freelancersData || {});
         displayFreelancers(allFreelancers);
         displayChats();
+        console.log("Freelancer data loaded and displayed.");
     } catch (error) {
         console.error('Failed to fetch freelancers from Firebase', error);
         document.getElementById('freelancer-list').innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
@@ -167,3 +180,4 @@ function openChatRoom(freelancerName) {
     document.getElementById('chat-with-name').innerText = freelancerName;
     navigateTo('page-chat-room');
 }
+
