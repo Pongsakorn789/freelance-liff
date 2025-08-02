@@ -1,5 +1,5 @@
 // !!! สำคัญ: แก้เป็น LIFF ID ของคุณ !!!
-const liffId = "2007867348-RQ0pAK5j"; 
+const liffId = "2007867348-RQ0pAK5j";
 let allFreelancers = [], allJobs = {};
 let currentUserProfile = null;
 let currentRole = null; // 'client' or 'freelancer'
@@ -13,7 +13,6 @@ async function main() {
             liff.login();
             return;
         }
-        // เมื่อ LIFF พร้อมแล้ว จึงค่อยติดตั้งการทำงานของปุ่ม
         setupRoleSelection();
     } catch (error) {
         console.error("Initialization Failed:", error);
@@ -42,12 +41,21 @@ function setupRoleSelection() {
 }
 
 async function startApp() {
-    setupCommonEventListeners();
     await loadAllData();
+    setupEventListeners();
 }
 
-function setupCommonEventListeners() {
-    const navId = currentRole === 'client' ? '#nav-client' : '#nav-freelancer';
+async function loadAllData() {
+    await getUserProfile();
+    if (currentRole === 'client') {
+        await Promise.all([fetchFreelancers(), fetchMyJobs()]);
+    } else if (currentRole === 'freelancer') {
+        await Promise.all([fetchAllJobs(), fetchMyServices()]);
+    }
+}
+
+function setupEventListeners() {
+    const navId = `#nav-${currentRole}`;
     document.querySelectorAll(`${navId} button`).forEach(button => {
         button.addEventListener('click', () => navigateTo(button.dataset.page));
     });
@@ -58,15 +66,11 @@ function setupCommonEventListeners() {
         document.getElementById('show-post-job-modal-button').addEventListener('click', () => modal.classList.add('visible'));
         modal.querySelector('.close-button').addEventListener('click', () => modal.classList.remove('visible'));
         document.getElementById('post-job-form').addEventListener('submit', handleJobPost);
-    }
-}
-
-async function loadAllData() {
-    await getUserProfile();
-    if (currentRole === 'client') {
-        await Promise.all([fetchFreelancers(), fetchMyJobs()]);
     } else if (currentRole === 'freelancer') {
-        await fetchAllJobs();
+        const modal = document.getElementById('post-service-modal');
+        document.getElementById('show-post-service-modal-button').addEventListener('click', () => modal.classList.add('visible'));
+        modal.querySelector('.close-button').addEventListener('click', () => modal.classList.remove('visible'));
+        document.getElementById('post-service-form').addEventListener('submit', handleServicePost);
     }
 }
 
@@ -88,7 +92,7 @@ async function getUserProfile() {
         <p><b>User ID:</b> ${currentUserProfile.userId}</p>
         <p><b>Email:</b> ${liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : 'N/A'}</p>`;
     
-    const profileContainerId = currentRole === 'client' ? 'profile-display-client' : 'profile-display-freelancer';
+    const profileContainerId = `profile-display-${currentRole}`;
     document.getElementById(profileContainerId).innerHTML = profileHtml;
 }
 
@@ -128,13 +132,13 @@ function displayMyJobs(jobs) {
         card.innerHTML = `
             <div class="job-card-header">
                 <h3>${job.title}</h3>
-                <button class="delete-job-btn" data-job-id="${jobId}">&times;</button>
+                <button class="delete-btn" data-id="${jobId}">&times;</button>
             </div>
             <p class="job-card-category">${job.category}</p>
             <span>Budget: ${job.budget} THB</span>
             <p class="job-card-description">${job.description}</p>
             <div class="job-card-footer">Posted on ${job.postDate}</div>`;
-        card.querySelector('.delete-job-btn').addEventListener('click', () => handleJobDelete(jobId));
+        card.querySelector('.delete-btn').addEventListener('click', () => handleJobDelete(jobId));
         listEl.appendChild(card);
     });
 }
@@ -153,6 +157,7 @@ async function fetchFreelancers() {
     const snapshot = await firebase.database().ref('freelancers').once('value');
     allFreelancers = Object.values(snapshot.val() || {});
     displayFreelancers(allFreelancers);
+    displayClientChats(allFreelancers);
 }
 
 function displayFreelancers(freelancers) {
@@ -179,7 +184,74 @@ function filterFreelancers() {
     displayFreelancers(filtered);
 }
 
+function displayClientChats(freelancers) {
+    const chatListContainer = document.getElementById('chat-list-container-client');
+    chatListContainer.innerHTML = '';
+    if (freelancers.length === 0) { chatListContainer.innerHTML = '<p>No one to chat with yet.</p>'; return; }
+    freelancers.forEach(f => {
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-item';
+        chatItem.innerHTML = `<img src="${f.image_url}" alt="${f.name}"><div class="chat-info"><strong>${f.name}</strong><p>Freelancer</p></div><button class="contact-btn">Chat</button>`;
+        chatListContainer.appendChild(chatItem);
+    });
+}
+
 // ========= FREELANCER FUNCTIONS =========
+async function handleServicePost(event) {
+    event.preventDefault();
+    const serviceData = {
+        freelancerId: currentUserProfile.userId, freelancerName: currentUserProfile.displayName,
+        freelancerPicture: currentUserProfile.pictureUrl, title: document.getElementById('service-title').value,
+        description: document.getElementById('service-description').value, skills: document.getElementById('service-skills').value,
+        portfolio_url: document.getElementById('service-portfolio').value, postDate: new Date().toISOString().split('T')[0]
+    };
+    try {
+        await firebase.database().ref('services').push(serviceData);
+        alert("Service posted successfully!");
+        document.getElementById('post-service-form').reset();
+        document.getElementById('post-service-modal').classList.remove('visible');
+        fetchMyServices();
+    } catch (error) { console.error("Error posting service:", error); alert("Failed to post service."); }
+}
+
+async function fetchMyServices() {
+    const servicesRef = firebase.database().ref('services');
+    const snapshot = await servicesRef.orderByChild('freelancerId').equalTo(currentUserProfile.userId).once('value');
+    displayMyServices(snapshot.val() || {});
+}
+
+function displayMyServices(services) {
+    const listEl = document.getElementById('my-services-list');
+    listEl.innerHTML = '';
+    if (Object.keys(services).length === 0) {
+        listEl.innerHTML = "<p>You haven't posted any services yet.</p>"; return;
+    }
+    Object.entries(services).reverse().forEach(([serviceId, service]) => {
+        const card = document.createElement('div');
+        card.className = 'service-card';
+        card.innerHTML = `
+            <div class="job-card-header">
+                <h3>${service.title}</h3>
+                <button class="delete-btn" data-id="${serviceId}">&times;</button>
+            </div>
+            <p class="job-card-category">${service.skills}</p>
+            <p class="job-card-description">${service.description}</p>
+            <a href="${service.portfolio_url}" target="_blank" class="portfolio-btn">View Portfolio</a>`;
+        card.querySelector('.delete-btn').addEventListener('click', () => handleServiceDelete(serviceId));
+        listEl.appendChild(card);
+    });
+}
+
+async function handleServiceDelete(serviceId) {
+     if (confirm('Are you sure you want to delete this service?')) {
+        try {
+            await firebase.database().ref('services/' + serviceId).remove();
+            alert('Service deleted successfully!');
+            fetchMyServices();
+        } catch (error) { alert('Failed to delete service.'); console.error(error); }
+    }
+}
+
 async function fetchAllJobs() {
     const snapshot = await firebase.database().ref('jobs').once('value');
     allJobs = snapshot.val() || {};
