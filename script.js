@@ -9,8 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const clientButton = document.getElementById('client-button');
 
     clientButton.addEventListener('click', () => {
-        roleSelectionPage.style.display = 'none';
+        // --- แก้ไขโค้ดส่วนนี้ ---
+        // เปลี่ยนจากการใช้ style.display มาเป็นการลบ class 'active' แทน
+        // เพื่อให้ทำงานสอดคล้องกับ CSS
+        roleSelectionPage.classList.remove('active'); 
         mainApp.style.display = 'block';
+        // --- จบส่วนที่แก้ไข ---
+        
         initializeLiff(); 
     });
 
