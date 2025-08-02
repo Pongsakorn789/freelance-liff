@@ -1,52 +1,60 @@
-// script.js (เวอร์ชันอัปเกรดสำหรับติดต่องาน)
+// script.js (เวอร์ชัน Multi-page)
 
-const liffId = "2007867348-j6VyLzkW"; // LIFF ID ของคุณ
+const liffId = "YOUR_LIFF_ID"; // ใส่ LIFF ID ของคุณ
 let allFreelancers = [];
 
+// --- โค้ดใหม่: ส่วนควบคุมการเปลี่ยนหน้า ---
 document.addEventListener('DOMContentLoaded', function () {
-    initializeLiffAndCheckAction(); // เปลี่ยนชื่อฟังก์ชันเป็นอันใหม่
-});
+    const navButtons = document.querySelectorAll('.bottom-nav button');
+    const pages = document.querySelectorAll('.page');
 
-async function initializeLiffAndCheckAction() {
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetPageId = button.dataset.page;
+
+            // ซ่อนทุกหน้า
+            pages.forEach(page => page.classList.remove('active'));
+            // แสดงหน้าที่ต้องการ
+            document.getElementById(targetPageId).classList.add('active');
+
+            // อัปเดตปุ่ม active
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // เริ่มต้น LIFF และดึงข้อมูล
+    initializeLiff();
+});
+// --- จบส่วนควบคุมการเปลี่ยนหน้า ---
+
+async function initializeLiff() {
     try {
         await liff.init({ liffId: liffId });
-
-        // --- Logic ใหม่: ตรวจสอบ URL Parameter ---
-        const params = new URLSearchParams(window.location.search);
-        const freelancerId = params.get('freelancerId');
-
-        if (freelancerId) {
-            // ถ้ามี freelancerId ส่งมาด้วย (คือการกดปุ่ม "ติดต่องาน")
-            // ให้เปิดหน้าแชทของฟรีแลนซ์คนนั้นทันที
-            const lineChatUrl = `https://line.me/R/ti/p/~${freelancerId}`;
-
-            // ใช้ liff.openWindow เพื่อประสบการณ์ที่ดีที่สุด
-            liff.openWindow({
-                url: lineChatUrl,
-                external: true // บังคับให้เปิดในแอป LINE
-            });
-
-            // ไม่ต้องทำอะไรต่อหลังจากนี้
-            return; 
-        }
-
-        // --- ถ้าไม่มี freelancerId (คือการเข้าเว็บตามปกติ) ---
-        // ให้ทำงานเหมือนเดิม คือแสดงรายชื่อฟรีแลนซ์
+        
         if (!liff.isLoggedIn()) {
             liff.login();
-        } else {
-            const profile = await liff.getProfile();
-            document.getElementById('user-greeting').innerText = `สวัสดี, ${profile.displayName}!`;
-            fetchFreelancers(); // เรียกฟังก์ชันดึงข้อมูล
+            return;
         }
-        // --- จบส่วน Logic ใหม่ ---
+        
+        const profile = await liff.getProfile();
+
+        // --- โค้ดใหม่: นำข้อมูลโปรไฟล์ไปแสดงผล ---
+        // หน้า Search
+        document.getElementById('user-greeting').innerText = `สวัสดี, ${profile.displayName}!`;
+        // หน้า Profile
+        document.getElementById('profile-picture').src = profile.pictureUrl;
+        document.getElementById('profile-name').innerText = profile.displayName;
+
+        // หลังจากได้โปรไฟล์แล้ว ค่อยดึงข้อมูลฟรีแลนซ์
+        fetchFreelancers();
 
     } catch (e) {
         console.error('LIFF Initialization failed', e);
     }
 }
 
-// ฟังก์ชัน fetchFreelancers และอื่นๆ เหมือนเดิมทั้งหมด
+// ฟังก์ชัน fetchFreelancers, displayFreelancers, filterFreelancers (เหมือนเดิม)
 async function fetchFreelancers() {
     const listElement = document.getElementById('freelancer-list');
     try {
@@ -56,7 +64,7 @@ async function fetchFreelancers() {
         allFreelancers = Object.values(freelancersData || {});
         displayFreelancers(allFreelancers);
     } catch (error) {
-        console.error('Failed to fetch freelancers from Firebase', error);
+        console.error('Failed to fetch freelancers', error);
         listElement.innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
     }
 }
@@ -65,7 +73,7 @@ function displayFreelancers(freelancers) {
     const listElement = document.getElementById('freelancer-list');
     listElement.innerHTML = '';
     if (freelancers.length === 0) {
-        listElement.innerHTML = '<p>ไม่พบฟรีแลนซ์ที่ตรงกับเงื่อนไข</p>';
+        listElement.innerHTML = '<p>ไม่พบฟรีแลนซ์</p>';
         return;
     }
     freelancers.forEach(f => {
@@ -76,12 +84,13 @@ function displayFreelancers(freelancers) {
             <div class="freelancer-info">
                 <h3>${f.name}</h3>
                 <p>${f.skills.replace(/,/g, ', ')}</p>
-                <a href="${f.portfolio_url}" target="_blank">ดูผลงาน</a>
+                <a href="${f.portfolio_url}" target="_blank" class="portfolio-btn">ดูผลงาน</a>
             </div>
         `;
         listElement.appendChild(card);
     });
 }
+
 
 function filterFreelancers() {
     const searchTerm = document.getElementById('search-box').value.toLowerCase();
