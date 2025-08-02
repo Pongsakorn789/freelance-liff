@@ -18,6 +18,24 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  // วาง firebaseConfig ที่คัดลอกมาลงที่นี่
+  const firebaseConfig = {
+  apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
+  authDomain: "freelance-hackathon.firebaseapp.com",
+  databaseURL: "https://freelance-hackathon-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "freelance-hackathon",
+  storageBucket: "freelance-hackathon.firebasestorage.app",
+  messagingSenderId: "373560862804",
+  appId: "1:373560862804:web:92926446cdd9fd675f25c1"
+};
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="script.js"></script>
 </body>
