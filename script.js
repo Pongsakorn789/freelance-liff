@@ -1,7 +1,7 @@
 // script.js (Frontend LIFF)
 
 // !!! แก้เป็น URL ของ Google Sheet CSV ของคุณ !!!
-const SPREADSHEET_URL = 'YOUR_GOOGLE_SHEET_CSV_URL'; 
+const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSC4XVpRkYn5R9K3WEYbBLE68EBgdwWb93uTyT14kqE9VJi2ht1VdAee_R8_PfvZmk39CTxEfdmCDLp/pub?output=csv'; 
 const liffId = "YOUR_LIFF_ID"; // เดี๋ยวเราจะได้ค่านี้ในขั้นตอนถัดไป
 
 let allFreelancers = [];
