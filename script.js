@@ -2,20 +2,44 @@
 const liffId = "2007867348-RQ0pAK5j"; 
 let allFreelancers = [];
 
-// --- ส่วนควบคุมการเลือก Role และการเปลี่ยนหน้า ---
+// --- ฟังก์ชันหลักที่จะทำงานเมื่อหน้าเว็บโหลดเสร็จ ---
 document.addEventListener('DOMContentLoaded', function () {
+    main();
+});
+
+async function main() {
+    try {
+        // 1. เริ่มต้นการทำงานของ LIFF ทันที
+        await liff.init({ liffId: liffId });
+
+        // 2. หลังจาก LIFF พร้อมแล้ว ค่อยตั้งค่าการทำงานของปุ่ม
+        setupEventListeners();
+
+        // 3. ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง (แต่ยังไม่เริ่มแอปหลัก)
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+    } catch (e) {
+        console.error('LIFF Initialization failed', e);
+        alert('LIFF Initialization failed. Error: ' + JSON.stringify(e));
+    }
+}
+
+// --- ฟังก์ชันสำหรับตั้งค่า Event Listener ทั้งหมด ---
+function setupEventListeners() {
     const roleSelectionPage = document.getElementById('page-role-selection');
     const mainApp = document.getElementById('main-app');
     const clientButton = document.getElementById('client-button');
 
     clientButton.addEventListener('click', () => {
-        // --- แก้ไขโค้ดส่วนนี้ ---
-        // เปลี่ยนไปใช้ style.display โดยตรงเพื่อความแน่นอน
+        // เมื่อกดปุ่ม "ผู้จ้าง"
         roleSelectionPage.style.display = 'none';
         mainApp.style.display = 'block';
-        // --- จบส่วนที่แก้ไข ---
         
-        initializeLiff(); 
+        // ค่อยเริ่มดึงข้อมูลโปรไฟล์และฟรีแลนซ์
+        startClientApp(); 
     });
 
     const navButtons = document.querySelectorAll('.bottom-nav button');
@@ -26,17 +50,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ปุ่มกลับจากห้องแชท
     document.getElementById('back-to-chat-list').addEventListener('click', () => {
         navigateTo('page-chat');
     });
 
-    // ผูก event listener กับช่อง search
     const searchBox = document.getElementById('search-box');
     if (searchBox) {
         searchBox.addEventListener('input', filterFreelancers);
     }
-});
+}
+
+// --- ฟังก์ชันที่เริ่มการทำงานของแอปฝั่ง Client ---
+function startClientApp() {
+    getUserProfile();
+    fetchFreelancers();
+}
 
 function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -45,27 +73,7 @@ function navigateTo(pageId) {
     document.querySelectorAll('.bottom-nav button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === pageId);
     });
-    // ซ่อน/แสดง แถบเมนู
     document.querySelector('.bottom-nav').style.display = pageId === 'page-chat-room' ? 'none' : 'flex';
-}
-
-// --- ฟังก์ชันหลักของ LIFF App ---
-async function initializeLiff() {
-    try {
-        await liff.init({ liffId: liffId });
-        
-        if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
-        }
-        
-        getUserProfile(); // เรียกใช้ฟังก์ชันดึงโปรไฟล์ตามสไลด์
-        fetchFreelancers();
-
-    } catch (e) {
-        console.error('LIFF Initialization failed', e);
-        alert('LIFF Initialization failed. Error: ' + JSON.stringify(e));
-    }
 }
 
 // --- ฟังก์ชันดึงโปรไฟล์ตามสไลด์ ---
@@ -77,7 +85,6 @@ async function getUserProfile() {
         document.getElementById('displayName').innerText = profile.displayName;
         document.getElementById('statusMessage').innerHTML = `<b>Status:</b> ${profile.statusMessage || 'ไม่มีข้อความสถานะ'}`;
 
-        // การดึง Email (ต้องขอ permission ก่อน และตั้งค่า Scope ให้มี openid)
         if (liff.getDecodedIDToken()) {
             document.getElementById('email').innerHTML = `<b>Email:</b> ${liff.getDecodedIDToken().email}`;
         }
@@ -94,7 +101,7 @@ async function fetchFreelancers() {
         const freelancersData = snapshot.val();
         allFreelancers = Object.values(freelancersData || {});
         displayFreelancers(allFreelancers);
-        displayChats(); // เรียกฟังก์ชันแสดงแชทหลังจากดึงข้อมูล
+        displayChats();
     } catch (error) {
         console.error('Failed to fetch freelancers from Firebase', error);
         document.getElementById('freelancer-list').innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
@@ -135,7 +142,7 @@ function filterFreelancers() {
 // --- ฟังก์ชันใหม่: จัดการหน้าแชท ---
 function displayChats() {
     const chatListContainer = document.getElementById('chat-list-container');
-    chatListContainer.innerHTML = ''; // Clear list
+    chatListContainer.innerHTML = '';
     if (!allFreelancers || allFreelancers.length === 0) return;
     
     allFreelancers.forEach(freelancer => {
@@ -149,7 +156,6 @@ function displayChats() {
             </div>
             <button class="contact-btn">คุยต่อ</button>
         `;
-        // เพิ่ม event listener ให้ปุ่ม "คุยต่อ"
         chatItem.querySelector('.contact-btn').addEventListener('click', () => {
             openChatRoom(freelancer.name);
         });
