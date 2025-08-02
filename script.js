@@ -1,5 +1,5 @@
 // !!! สำคัญ: แก้เป็น LIFF ID ของคุณ !!!
-const liffId = "2007867348-RQ0pAK5j";
+const liffId = "2007867348-RQ0pAK5j"; 
 let allFreelancers = [], allJobs = {};
 let currentUserProfile = null;
 let currentRole = null; // 'client' or 'freelancer'
