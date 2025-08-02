@@ -1,231 +1,120 @@
 /* --- Global Styles --- */
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
-
 :root {
-    --primary-color: #06C755;
-    --text-primary: #1c1e21;
-    --text-secondary: #65676b;
-    --background-light: #f0f2f5;
-    --background-white: #ffffff;
-    --border-color: #e0e2e7;
+    --primary-color: #06C755; --text-primary: #1c1e21; --text-secondary: #65676b;
+    --background-light: #f4f6f8; --background-white: #ffffff; --border-color: #e0e2e7;
+    --danger-color: #ff4d4f;
 }
-
 body {
-    font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
-    background-color: var(--background-light);
-    color: var(--text-primary);
+    font-family: 'Sarabun', sans-serif; margin: 0;
+    background-color: var(--background-light); color: var(--text-primary);
 }
-
-.container {
-    padding: 20px;
-    padding-bottom: 90px;
-}
-
-h1 { font-size: 28px; font-weight: 700; color: var(--primary-color); }
+.container { padding: 20px; padding-bottom: 90px; }
+h1 { font-size: 28px; font-weight: 700; color: var(--text-primary); }
 h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
+.loader { text-align: center; padding: 20px; color: var(--text-secondary); }
 
-/* --- Page Control --- */
-.page { display: none; }
-.page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-#main-app { display: none; }
+/* --- App & Page Control --- */
+.page, .app-container { display: none; }
+.page.active, .app-container.active { display: block; }
+#page-role-selection { display: block; }
+.page.active { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Role Selection Page --- */
+/* --- Role Selection --- */
 .role-container {
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; height: 100vh; padding: 20px;
-    box-sizing: border-box; text-align: center;
+    justify-content: center; height: 100vh; text-align: center;
 }
-.main-logo-emoji { font-size: 60px; margin-bottom: 15px; }
-.role-container h1 { font-size: 24px; margin-bottom: 40px; }
-.brand-highlight {
-    background-color: #e8e8e8; color: #333; padding: 4px 12px;
-    border-radius: 16px; font-weight: 500;
-}
+.main-logo-emoji { font-size: 60px; }
+.brand-highlight { background-color: #e8e8e8; padding: 4px 12px; border-radius: 16px; }
 .role-button {
     background-color: var(--primary-color); color: white; border: none;
-    border-radius: 20px; padding: 20px; width: 100%;
-    max-width: 300px; margin-bottom: 20px; cursor: pointer;
+    border-radius: 20px; padding: 20px; width: 100%; max-width: 300px;
+    margin-top: 20px; cursor: pointer;
 }
-.role-button h2 { color: white; margin: 0 0 10px 0; }
 .role-emoji { font-size: 60px; }
 
-/* --- Bottom Navigation Bar --- */
+/* --- Bottom Nav --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; width: 100%;
     background-color: var(--background-white); display: flex;
     justify-content: space-around; box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-    padding: 10px 0; padding-bottom: env(safe-area-inset-bottom);
-    z-index: 1000;
+    padding: 10px 0; z-index: 1000;
 }
-.bottom-nav button {
-    background: none; border: none; font-size: 14px;
-    color: var(--text-secondary); cursor: pointer; padding: 5px 10px;
-}
+.bottom-nav button { background: none; border: none; color: var(--text-secondary); cursor: pointer; }
 .bottom-nav button.active { color: var(--primary-color); font-weight: 600; }
 
-/* --- Search Page & Freelancer Card --- */
-.search-container { margin-bottom: 20px; }
-#search-box {
-    width: 100%; padding: 14px 20px; font-size: 16px;
-    border-radius: 25px; border: 1px solid var(--border-color);
-    box-sizing: border-box; background-color: var(--background-white);
-}
-.freelancer-card {
-    background-color: var(--background-white); border-radius: 16px;
-    padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    display: flex; align-items: center; border: 1px solid var(--border-color);
-}
-.freelancer-card img {
-    width: 60px; height: 60px; border-radius: 50%;
-    margin-right: 15px; object-fit: cover;
-}
-.freelancer-info h3 { margin: 0 0 5px 0; font-size: 18px; }
-.freelancer-info p { margin: 0; font-size: 14px; color: var(--text-secondary); }
-.portfolio-btn {
-    display: inline-block; margin-top: 10px; text-decoration: none;
-    color: var(--primary-color); font-weight: 600; font-size: 14px;
-}
-
-/* --- Profile Page --- */
-#profile-display {
-    background-color: var(--background-white); padding: 20px;
-    text-align: center; border-radius: 16px;
-}
-#profile-display img {
-    width: 120px; height: 120px; border-radius: 50%;
-    object-fit: cover; border: 4px solid var(--background-white);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-#profile-display h2 { margin-top: 15px; font-size: 24px; font-weight: 600; }
-#profile-display p { word-wrap: break-word; color: var(--text-secondary); text-align: left; margin: 10px 0;}
-#profile-display hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
-
-/* --- Home / Jobboard Page --- */
-.post-card {
-    background: linear-gradient(135deg, #06C755, #00B900);
-    color: white; padding: 25px; border-radius: 16px;
-    text-align: center; margin: 20px 0;
-    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
-}
-#show-post-job-modal-button {
-    background-color: var(--background-white); color: var(--primary-color);
-    border: none; padding: 12px 40px; border-radius: 25px;
-    font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px;
-}
-
-/* --- My Jobs List & Card --- */
-.job-card {
+/* --- Cards (Job & Freelancer) --- */
+.job-card, .freelancer-card {
     background-color: var(--background-white); border-radius: 16px;
     padding: 20px; margin-bottom: 15px; border: 1px solid var(--border-color);
 }
-.job-card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px;
-}
+.job-card-header { display: flex; justify-content: space-between; align-items: center; }
 .job-card-header h3 { margin: 0; font-size: 18px; }
-.job-card-header span { font-weight: 600; color: var(--primary-color); }
+.delete-job-btn {
+    background: none; border: none; color: var(--danger-color);
+    font-size: 24px; cursor: pointer; font-weight: bold;
+}
 .job-card-category {
     background-color: #e8f8f0; color: var(--primary-color);
-    padding: 4px 10px; border-radius: 12px;
-    display: inline-block; font-size: 12px; font-weight: 500; margin-bottom: 15px;
+    padding: 4px 10px; border-radius: 12px; display: inline-block;
+    font-size: 12px; margin: 10px 0;
 }
-.job-card-description { margin: 0; color: var(--text-secondary); }
+.job-card-description { margin: 10px 0; }
 .job-card-footer {
     margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-color);
     font-size: 12px; color: #aaa; text-align: right;
 }
+.job-card-client-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+.job-card-client-info img { width: 30px; height: 30px; border-radius: 50%; }
+.apply-btn {
+    width: 100%; background-color: var(--primary-color); color: white;
+    border: none; padding: 12px; border-radius: 8px; font-size: 16px;
+    font-weight: bold; cursor: pointer; margin-top: 15px;
+}
+.freelancer-card { display: flex; align-items: center; }
+.freelancer-card img { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; }
+.freelancer-info h3 { margin: 0 0 5px 0; }
+.portfolio-btn { display: inline-block; margin-top: 10px; color: var(--primary-color); font-weight: 600; }
 
-/* --- Chat Page --- */
-.chat-list { display: flex; flex-direction: column; gap: 10px; }
-.chat-item {
-    background-color: var(--background-white); border-radius: 16px;
-    padding: 15px; display: flex; align-items: center; gap: 15px;
-    border: 1px solid var(--border-color);
+/* --- Profile Page --- */
+#profile-display-client, #profile-display-freelancer {
+    background-color: var(--background-white); padding: 20px;
+    text-align: center; border-radius: 16px;
 }
-.chat-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
-.chat-info { flex-grow: 1; }
-.contact-btn {
-    background-color: var(--primary-color); color: white; text-decoration: none;
-    padding: 8px 15px; border-radius: 20px; font-size: 14px;
-    border: none; cursor: pointer;
+#profile-display-client img, #profile-display-freelancer img {
+    width: 120px; height: 120px; border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
+#profile-display-client p, #profile-display-freelancer p { text-align: left; }
+#profile-display-client hr, #profile-display-freelancer hr { border-top: 1px solid var(--border-color); }
 
-/* Chat Room */
-.chat-room-header {
-    display: flex; align-items: center; gap: 15px;
-    padding-bottom: 15px; border-bottom: 1px solid var(--border-color);
-}
-.chat-room-header button { background: none; border: none; font-size: 24px; cursor: pointer; }
-.chat-messages { padding: 20px 0; display: flex; flex-direction: column; gap: 10px; }
-.message { padding: 10px 15px; border-radius: 20px; max-width: 70%; }
-.message.sent { background-color: var(--primary-color); color: white; align-self: flex-end; }
-.message.received { background-color: var(--background-white); align-self: flex-start; }
-.chat-input-area {
-    position: fixed; bottom: 0; left: 0; width: 100%;
-    background-color: var(--background-white); padding: 15px;
-    display: flex; gap: 10px; box-sizing: border-box;
-    border-top: 1px solid var(--border-color);
-}
-.chat-input-area input { flex-grow: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; }
-.chat-input-area button {
-    background-color: var(--primary-color); color: white; border: none;
-    border-radius: 20px; padding: 10px 20px; font-weight: bold; cursor: pointer;
-}
-
-/* --- Post Job Modal (เวอร์ชันปรับปรุง) --- */
+/* --- Modal --- */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 2000;
-    /* Animation */
-    visibility: hidden;
-    opacity: 0;
+    background-color: rgba(0,0,0,0.6); display: flex; justify-content: center;
+    align-items: center; z-index: 2000; visibility: hidden; opacity: 0;
     transition: opacity 0.3s ease, visibility 0s 0.3s;
 }
-.modal-overlay.visible {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.3s ease, visibility 0s;
-}
+.modal-overlay.visible { visibility: visible; opacity: 1; transition: opacity 0.3s ease; }
 .modal-content {
     background-color: var(--background-white); padding: 30px;
-    border-radius: 16px; width: 90%; max-width: 500px;
-    position: relative;
-    /* Animation */
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
+    border-radius: 16px; width: 90%; max-width: 500px; position: relative;
+    transform: translateY(-20px); transition: transform 0.3s ease;
 }
-.modal-overlay.visible .modal-content {
-    transform: translateY(0);
-}
+.modal-overlay.visible .modal-content { transform: translateY(0); }
 .close-button {
-    position: absolute; top: 10px; right: 10px;
-    background: none; border: none; font-size: 28px;
-    cursor: pointer; color: var(--text-secondary);
+    position: absolute; top: 10px; right: 10px; background: none;
+    border: none; font-size: 28px; cursor: pointer; color: var(--text-secondary);
 }
-#post-job-form label {
-    display: block; margin-bottom: 8px; font-weight: 500;
-    color: var(--text-primary);
-}
-#post-job-form input, #post-job-form textarea {
-    width: 100%; padding: 12px; margin-bottom: 15px;
-    border: 1px solid var(--border-color); border-radius: 8px;
-    box-sizing: border-box; font-family: 'Sarabun', sans-serif;
-    font-size: 16px;
+#post-job-form label, #post-service-form label { display: block; margin-bottom: 8px; font-weight: 500; }
+#post-job-form input, #post-job-form textarea, #post-service-form input, #post-service-form textarea {
+    width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color);
+    border-radius: 8px; box-sizing: border-box; font-size: 16px;
 }
 .submit-button {
     width: 100%; background-color: var(--primary-color); color: white;
-    border: none; padding: 14px; border-radius: 8px;
-    font-size: 16px; font-weight: bold; cursor: pointer;
-    transition: background-color 0.2s;
-}
-.submit-button:hover {
-    background-color: #05a545;
+    border: none; padding: 14px; border-radius: 8px; font-size: 16px;
+    font-weight: bold; cursor: pointer;
 }
