@@ -3,39 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ค้นหาฟรีแลนซ์</title>
+    <title>LINE Freelance</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ซ่อนทุกหน้าไว้ก่อนเป็นค่าเริ่มต้น */
+        .page { display: none; }
+        /* แสดงหน้าแรกที่ถูกกำหนดไว้ */
+        .page.active { display: block; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ค้นหาฟรีแลนซ์</h1>
-        <p id="user-greeting"></p>
-        <div class="search-container">
-            <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ เช่น วาดรูป, ทำเว็บ...">
+    <main class="container">
+        <div id="page-home" class="page">
+            <h1>Jobboard</h1>
+            <p>Let's post!!!</p>
+            <div class="post-card">
+                <p>Start your project now.<br>Find trusted Freelancers ready to help.</p>
+                <button id="post-job-button">Post !</button>
+            </div>
+            <h2>My Jobs</h2>
+            <div id="my-jobs-list">
+                </div>
         </div>
-        <div id="freelancer-list">
-            <div class="loader">กำลังโหลดข้อมูล...</div>
+
+        <div id="page-search" class="page active">
+            <h1>ค้นหาฟรีแลนซ์</h1>
+            <p id="user-greeting"></p>
+            <div class="search-container">
+                <input type="text" id="search-box" placeholder="พิมพ์ทักษะที่ต้องการ...">
+            </div>
+            <div id="freelancer-list">
+                <div class="loader">กำลังโหลดข้อมูล...</div>
+            </div>
         </div>
-    </div>
+        
+        <div id="page-chat" class="page">
+            <h1>Chats</h1>
+            <div class="chat-list">
+                <div class="chat-item">
+                    <img src="URL_รูปสมชาย" alt="สมชาย">
+                    <div class="chat-info">
+                        <strong>สมชาย เก่งมาก</strong>
+                        <p>สถานะ: รอตอบกลับ</p>
+                    </div>
+                    <a href="line://app/LIFF_ID?freelancerId=USER_ID_สมชาย" class="contact-btn">คุยต่อ</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-profile" class="page">
+            <h1>Profile</h1>
+            <div class="profile-header">
+                <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">
+                <h2 id="profile-name">Loading...</h2>
+            </div>
+            <div class="profile-section">
+                <h3>Hiring History</h3>
+                <div id="hiring-history">
+                    <p>2025 - Small Project</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button data-page="page-home">🏠 Home</button>
+        <button data-page="page-search" class="active">🔍 Search</button>
+        <button data-page="page-chat">💬 Chat</button>
+        <button data-page="page-profile">👤 Profile</button>
+    </nav>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<script>
-  // วาง firebaseConfig ที่คัดลอกมาลงที่นี่
-  const firebaseConfig = {
-  apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
-  authDomain: "freelance-hackathon.firebaseapp.com",
-  databaseURL: "https://freelance-hackathon-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "freelance-hackathon",
-  storageBucket: "freelance-hackathon.firebasestorage.app",
-  messagingSenderId: "373560862804",
-  appId: "1:373560862804:web:92926446cdd9fd675f25c1"
-};
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-</script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+      const firebaseConfig = { /* ... ใส่ config ของคุณ ... */ };
+      firebase.initializeApp(firebaseConfig);
+    </script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="script.js"></script>
 </body>
