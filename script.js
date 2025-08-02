@@ -4,84 +4,77 @@ let allFreelancers = [];
 let currentUserProfile = null;
 
 // --- ฟังก์ชันหลักที่จะทำงานเมื่อหน้าเว็บโหลดเสร็จ ---
-document.addEventListener('DOMContentLoaded', function () {
-    // 1. ตั้งค่าปุ่มเลือก Role ทันที ไม่ต้องรอ LIFF
-    setupRoleSelection();
-    
-    // 2. ตั้งค่า Event Listener อื่นๆ ที่ไม่เกี่ยวกับ LIFF
-    setupStaticEventListeners();
-});
+document.addEventListener('DOMContentLoaded', main);
 
-// --- ฟังก์ชันสำหรับตั้งค่าปุ่มเลือก Role ---
-function setupRoleSelection() {
+// --- โครงสร้างใหม่ที่แน่นอนที่สุด ---
+async function main() {
+    console.log("App is starting...");
+    try {
+        // 1. รอให้ LIFF เริ่มต้นการทำงานให้เสร็จก่อนเป็นอันดับแรก
+        await liff.init({ liffId: liffId });
+        console.log("LIFF initialized successfully.");
+
+        // 2. ตรวจสอบว่าล็อกอินหรือยัง
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return; // หยุดทำงานไปเลยถ้ายังไม่ล็อกอิน
+        }
+
+        // 3. เมื่อ LIFF พร้อมแล้ว "จึงค่อย" ติดตั้งการทำงานของปุ่มทั้งหมด
+        setupAllEventListeners();
+
+        // 4. และ "จึงค่อย" โหลดข้อมูลทั้งหมด
+        await loadAllData();
+
+    } catch (error) {
+        console.error("Initialization failed:", error);
+        alert("Initialization failed. Please check console for details.");
+    }
+}
+
+// --- ฟังก์ชันสำหรับตั้งค่า Event Listener ทั้งหมด ---
+function setupAllEventListeners() {
+    // -- ปุ่มเลือก Role --
     const roleSelectionPage = document.getElementById('page-role-selection');
     const mainApp = document.getElementById('main-app');
     const clientButton = document.getElementById('client-button');
 
     clientButton.addEventListener('click', () => {
-        // เมื่อกดปุ่ม ให้สลับหน้าและ "ค่อย" เริ่มแอป LIFF
         roleSelectionPage.style.display = 'none';
         mainApp.style.display = 'block';
-        startLiffApp(); // <--- เรียกฟังก์ชันเพื่อเริ่มแอปหลัก
     });
-}
 
-// --- ฟังก์ชันสำหรับเริ่มแอป LIFF หลัก (จะถูกเรียกหลังกดปุ่ม) ---
-async function startLiffApp() {
-    try {
-        await liff.init({ liffId: liffId });
-
-        if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
-        }
-
-        // โหลดข้อมูลทั้งหมดหลังจาก LIFF พร้อมใช้งาน
-        await Promise.all([
-            getUserProfile(),
-            fetchFreelancers()
-        ]);
-
-    } catch (e) {
-        console.error('LIFF Initialization failed', e);
-        alert('LIFF Initialization failed. Error: ' + JSON.stringify(e));
-    }
-}
-
-// --- ฟังก์ชันสำหรับ Event Listener ที่ไม่ขึ้นกับ LIFF ---
-function setupStaticEventListeners() {
+    // -- แถบเมนู --
     const navButtons = document.querySelectorAll('.bottom-nav button');
     navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const pageId = button.dataset.page;
-            navigateTo(pageId);
-        });
+        button.addEventListener('click', () => navigateTo(button.dataset.page));
     });
 
-    document.getElementById('back-to-chat-list').addEventListener('click', () => {
-        navigateTo('page-chat');
-    });
-
-    const searchBox = document.getElementById('search-box');
-    if (searchBox) {
-        searchBox.addEventListener('input', filterFreelancers);
-    }
+    // -- ปุ่มอื่นๆ --
+    document.getElementById('back-to-chat-list').addEventListener('click', () => navigateTo('page-chat'));
+    document.getElementById('search-box').addEventListener('input', filterFreelancers);
     
-    // ตั้งค่า Modal
+    // -- Modal --
     const modal = document.getElementById('post-job-modal');
-    const showModalButton = document.getElementById('show-post-job-modal-button');
-    const closeModalButton = document.getElementById('close-modal-button');
-    const jobForm = document.getElementById('post-job-form');
-
-    showModalButton.addEventListener('click', () => modal.classList.add('visible'));
-    closeModalButton.addEventListener('click', () => modal.classList.remove('visible'));
+    document.getElementById('show-post-job-modal-button').addEventListener('click', () => modal.classList.add('visible'));
+    document.getElementById('close-modal-button').addEventListener('click', () => modal.classList.remove('visible'));
     modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.classList.remove('visible');
-        }
+        if (event.target === modal) modal.classList.remove('visible');
     });
-    jobForm.addEventListener('submit', handleJobPost);
+    document.getElementById('post-job-form').addEventListener('submit', handleJobPost);
+    
+    console.log("All event listeners have been set up.");
 }
+
+// --- ฟังก์ชันสำหรับโหลดข้อมูลทั้งหมด ---
+async function loadAllData() {
+    await Promise.all([
+        getUserProfile(),
+        fetchFreelancers()
+    ]);
+    console.log("All data has been loaded.");
+}
+
 
 function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -93,7 +86,6 @@ function navigateTo(pageId) {
     document.querySelector('.bottom-nav').style.display = pageId === 'page-chat-room' ? 'none' : 'flex';
 }
 
-// --- ฟังก์ชันดึงโปรไฟล์ ---
 async function getUserProfile() {
     try {
         currentUserProfile = await liff.getProfile();
@@ -110,7 +102,6 @@ async function getUserProfile() {
     }
 }
 
-// --- ฟังก์ชันจัดการข้อมูลฟรีแลนซ์ ---
 async function fetchFreelancers() {
     try {
         const database = firebase.database();
@@ -119,8 +110,9 @@ async function fetchFreelancers() {
         allFreelancers = Object.values(freelancersData || {});
         displayFreelancers(allFreelancers);
         displayChats();
+        await fetchMyJobs(); // โหลดงานของฉันหลังจากดึงข้อมูลฟรีแลนซ์แล้ว
     } catch (error) {
-        console.error('Failed to fetch freelancers', error);
+        console.error('Failed to fetch freelancers from Firebase', error);
         document.getElementById('freelancer-list').innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
     }
 }
@@ -156,7 +148,6 @@ function filterFreelancers() {
     displayFreelancers(filtered);
 }
 
-// --- ฟังก์ชันจัดการหน้าแชท ---
 function displayChats() {
     const chatListContainer = document.getElementById('chat-list-container');
     chatListContainer.innerHTML = '';
@@ -185,7 +176,6 @@ function openChatRoom(freelancerName) {
     navigateTo('page-chat-room');
 }
 
-// --- ฟังก์ชันจัดการการโพสต์งาน ---
 async function handleJobPost(event) {
     event.preventDefault();
     if (!currentUserProfile) {
@@ -210,14 +200,13 @@ async function handleJobPost(event) {
         alert("Job posted successfully!");
         document.getElementById('post-job-form').reset();
         document.getElementById('post-job-modal').classList.remove('visible');
-        fetchMyJobs();
+        await fetchMyJobs();
     } catch (error) {
         console.error("Error posting job:", error);
         alert("Failed to post job. Please try again.");
     }
 }
 
-// --- ฟังก์ชันดึงและแสดงงานที่เคยโพสต์ ---
 async function fetchMyJobs() {
     if (!currentUserProfile) return;
     try {
