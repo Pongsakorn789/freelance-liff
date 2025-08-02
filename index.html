@@ -8,24 +8,18 @@
     <style>
         /* ซ่อนทุกอย่างไว้ก่อน ยกเว้นหน้าเลือก Role */
         .page, #client-app, #freelancer-app { display: none; }
-        .page.active { display: block; }
+        .page.active, #client-app.active, #freelancer-app.active { display: block; }
         #page-role-selection { display: block; } /* แสดงหน้าเลือก Role เป็นค่าเริ่มต้น */
     </style>
 </head>
 <body>
-    <!-- หน้าเลือก Role (แสดงเป็นหน้าแรก) -->
+    <!-- หน้าเลือก Role -->
     <div id="page-role-selection" class="page active">
         <div class="role-container">
             <span class="main-logo-emoji">💬</span>
             <h1>LINE <span class="brand-highlight">FREELANCE</span></h1>
-            <button class="role-button" id="client-button">
-                <h2>Client</h2>
-                <span class="role-emoji">💼</span>
-            </button>
-            <button class="role-button" id="freelancer-button">
-                <h2>Freelancer</h2>
-                <span class="role-emoji">🎨</span>
-            </button>
+            <button class="role-button" id="client-button"><h2>Client</h2><span class="role-emoji">💼</span></button>
+            <button class="role-button" id="freelancer-button"><h2>Freelancer</h2><span class="role-emoji">🎨</span></button>
         </div>
     </div>
 
@@ -72,13 +66,16 @@
             </div>
             <div id="page-freelancer-services" class="page">
                 <h1>My Services</h1>
-                <div class="post-card"><p>Showcase your skills.<br>Post a service to attract clients.</p><button>Post a Service!</button></div>
+                <div class="post-card">
+                    <p>Showcase your skills.<br>Post a service to attract clients.</p>
+                    <button id="show-post-service-modal-button">Post a Service!</button>
+                </div>
                 <h2>My Offered Services</h2>
-                <div id="my-services-list"><p>You haven't posted any services yet.</p></div>
+                <div id="my-services-list"><div class="loader">Loading services...</div></div>
             </div>
             <div id="page-freelancer-chat" class="page">
                 <h1>Chats</h1>
-                <div id="chat-list-container-freelancer" class="chat-list"></div>
+                <div id="chat-list-container-freelancer" class="chat-list"><p>No chats yet.</p></div>
             </div>
             <div id="page-freelancer-profile" class="page">
                 <h1>My Profile</h1>
@@ -99,15 +96,26 @@
             <button class="close-button">&times;</button>
             <h2>Post a New Job</h2>
             <form id="post-job-form">
-                <label for="job-title">Job Title</label>
-                <input type="text" id="job-title" required>
-                <label for="job-description">Description</label>
-                <textarea id="job-description" rows="4" required></textarea>
-                <label for="job-category">Category</label>
-                <input type="text" id="job-category" placeholder="e.g., Design, Other" required>
-                <label for="job-budget">Budget (THB)</label>
-                <input type="number" id="job-budget" required>
+                <label for="job-title">Job Title</label><input type="text" id="job-title" required>
+                <label for="job-description">Description</label><textarea id="job-description" rows="4" required></textarea>
+                <label for="job-category">Category</label><input type="text" id="job-category" placeholder="e.g., Design, Other" required>
+                <label for="job-budget">Budget (THB)</label><input type="number" id="job-budget" required>
                 <button type="submit" class="submit-button">Submit Job</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal สำหรับโพสต์บริการ -->
+    <div id="post-service-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button">&times;</button>
+            <h2>Post a New Service</h2>
+            <form id="post-service-form">
+                <label for="service-title">Service Title</label><input type="text" id="service-title" placeholder="e.g., Logo Design" required>
+                <label for="service-description">Description</label><textarea id="service-description" rows="4" required></textarea>
+                <label for="service-skills">Skills (comma separated)</label><input type="text" id="service-skills" placeholder="e.g., illustrator,photoshop,logo" required>
+                <label for="service-portfolio">Portfolio URL</label><input type="url" id="service-portfolio" required>
+                <button type="submit" class="submit-button">Submit Service</button>
             </form>
         </div>
     </div>
@@ -116,7 +124,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-      // !!! สำคัญ: แก้เป็น firebaseConfig ของคุณ !!!
       const firebaseConfig = {
   apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
   authDomain: "freelance-hackathon.firebaseapp.com",
