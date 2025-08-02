@@ -1,9 +1,6 @@
-// script.js (Frontend LIFF)
+// script.js (เวอร์ชัน Firebase)
 
-// !!! แก้เป็น URL ของ Google Sheet CSV ของคุณ !!!
-const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSC4XVpRkYn5R9K3WEYbBLE68EBgdwWb93uTyT14kqE9VJi2ht1VdAee_R8_PfvZmk39CTxEfdmCDLp/pub?output=csv'; 
-const liffId = "2007867348-j6VyLzkW"; // เดี๋ยวเราจะได้ค่านี้ในขั้นตอนถัดไป
-
+const liffId = "2007867348-j6VyLzkW"; // LIFF ID ของคุณ
 let allFreelancers = [];
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -31,31 +28,25 @@ async function initializeLiff() {
 async function fetchFreelancers() {
     const listElement = document.getElementById('freelancer-list');
     try {
-        const response = await fetch(SPREADSHEET_URL);
-        const csvText = await response.text();
-
-        const lines = csvText.trim().split('\n');
-        const headers = lines[0].split(',').map(h => h.trim());
-        allFreelancers = lines.slice(1).map(line => {
-            const data = line.split(',').map(d => d.trim());
-            let freelancer = {};
-            headers.forEach((header, index) => {
-                freelancer[header] = data[index];
-            });
-            return freelancer;
-        });
+        // --- ดึงข้อมูลจาก Firebase ---
+        const database = firebase.database();
+        const snapshot = await database.ref('freelancers').once('value');
+        const freelancersData = snapshot.val();
+        // แปลง Object เป็น Array เพื่อให้ใช้งานได้
+        allFreelancers = Object.values(freelancersData || {});
+        // --- จบส่วนดึงข้อมูล ---
 
         displayFreelancers(allFreelancers);
 
     } catch (error) {
-        console.error('Failed to fetch freelancers', error);
+        console.error('Failed to fetch freelancers from Firebase', error);
         listElement.innerHTML = '<p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
     }
 }
 
 function displayFreelancers(freelancers) {
     const listElement = document.getElementById('freelancer-list');
-    listElement.innerHTML = ''; // Clear previous results
+    listElement.innerHTML = '';
 
     if (freelancers.length === 0) {
         listElement.innerHTML = '<p>ไม่พบฟรีแลนซ์ที่ตรงกับเงื่อนไข</p>';
@@ -79,9 +70,9 @@ function displayFreelancers(freelancers) {
 
 function filterFreelancers() {
     const searchTerm = document.getElementById('search-box').value.toLowerCase();
-    const filtered = allFreelancers.filter(f => 
-        f.name.toLowerCase().includes(searchTerm) || 
-        f.skills.toLowerCase().includes(searchTerm)
+    const filtered = allFreelancers.filter(f =>
+        (f.name && f.name.toLowerCase().includes(searchTerm)) ||
+        (f.skills && f.skills.toLowerCase().includes(searchTerm))
     );
     displayFreelancers(filtered);
 }
