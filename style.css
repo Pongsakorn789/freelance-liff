@@ -8,44 +8,88 @@ body {
 
 .container {
     padding: 15px;
-    padding-bottom: 80px; /* เพิ่มพื้นที่ด้านล่างเพื่อไม่ให้โดนเมนูบัง */
+    padding-bottom: 80px;
 }
 
 h1, h2 {
-    color: #06C755; /* สีเขียว LINE */
+    color: #06C755;
 }
 
 /* Page Control */
 .page {
-    display: none; /* ซ่อนทุกหน้าไว้ก่อน */
+    display: none;
 }
-
 .page.active {
-    display: block; /* แสดงเฉพาะหน้าที่มี class 'active' */
+    display: block;
+}
+#main-app {
+    display: none;
 }
 
+/* Role Selection Page */
+.role-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.main-logo {
+    width: 60px;
+    margin-bottom: 15px;
+}
+.role-container h1 {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+.brand-highlight {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: normal;
+}
+.role-button {
+    background-color: #06C755;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.role-button h2 {
+    color: white;
+    margin: 0 0 10px 0;
+}
+.role-button img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
 
 /* Search Page Styles */
 .search-container {
     margin-bottom: 20px;
 }
-
 #search-box {
     width: 100%;
-    padding: 12px;
+    padding: 12px 20px;
     font-size: 16px;
     border-radius: 25px;
     border: 1px solid #ddd;
     box-sizing: border-box;
-    padding-left: 20px;
 }
-
 .loader {
     text-align: center;
     padding: 20px;
     color: #65676b;
 }
-
 
 /* Freelancer Card Styles */
 .freelancer-card {
@@ -57,7 +101,6 @@ h1, h2 {
     display: flex;
     align-items: center;
 }
-
 .freelancer-card img {
     width: 60px;
     height: 60px;
@@ -65,20 +108,17 @@ h1, h2 {
     margin-right: 15px;
     object-fit: cover;
 }
-
 .freelancer-info h3 {
     margin: 0 0 5px 0;
     font-size: 18px;
     color: #1c1e21;
 }
-
 .freelancer-info p {
     margin: 0;
     font-size: 14px;
     color: #65676b;
 }
-
-.freelancer-info .portfolio-btn {
+.portfolio-btn {
     display: inline-block;
     margin-top: 10px;
     text-decoration: none;
@@ -86,7 +126,6 @@ h1, h2 {
     font-weight: bold;
     font-size: 14px;
 }
-
 
 /* Bottom Navigation Bar */
 .bottom-nav {
@@ -101,32 +140,24 @@ h1, h2 {
     padding: 10px 0;
     z-index: 1000;
 }
-
 .bottom-nav button {
     background: none;
     border: none;
-    font-size: 16px; /* ปรับขนาดให้ใหญ่ขึ้นเล็กน้อย */
+    font-size: 14px;
     color: #888;
     cursor: pointer;
     padding: 5px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px; /* ระยะห่างระหว่างไอคอนกับข้อความ */
 }
-
 .bottom-nav button.active {
     color: #06C755;
     font-weight: bold;
 }
-
 
 /* Profile Page Styles */
 .profile-header {
     text-align: center;
     padding: 20px 0;
 }
-
 #profile-picture {
     width: 120px;
     height: 120px;
@@ -135,12 +166,10 @@ h1, h2 {
     border: 4px solid #fff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-
 #profile-name {
     margin-top: 15px;
     font-size: 24px;
     font-weight: 600;
-    color: #1c1e21;
 }
 
 .profile-section {
@@ -149,14 +178,12 @@ h1, h2 {
     padding: 20px;
     margin-top: 20px;
 }
-
 .profile-section h3 {
     margin-top: 0;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
     color: #333;
 }
-
 
 /* Home / Jobboard Page Styles */
 .post-card {
@@ -168,7 +195,6 @@ h1, h2 {
     margin: 20px 0;
     box-shadow: 0 4px 15px rgba(6, 199, 85, 0.4);
 }
-
 #post-job-button {
     background-color: #fff;
     color: #06C755;
@@ -179,11 +205,6 @@ h1, h2 {
     font-weight: bold;
     cursor: pointer;
     margin-top: 15px;
-    transition: transform 0.2s;
-}
-
-#post-job-button:hover {
-    transform: scale(1.05);
 }
 
 /* Chat Page Mockup Styles */
@@ -192,7 +213,6 @@ h1, h2 {
     flex-direction: column;
     gap: 10px;
 }
-
 .chat-item {
     background-color: #fff;
     border-radius: 12px;
@@ -201,24 +221,15 @@ h1, h2 {
     align-items: center;
     gap: 15px;
 }
-
 .chat-item img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
 }
-
 .chat-info {
     flex-grow: 1;
 }
-
-.chat-info p {
-    margin: 0;
-    font-size: 14px;
-    color: #888;
-}
-
 .contact-btn {
     background-color: #06C755;
     color: white;
@@ -226,5 +237,4 @@ h1, h2 {
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 14px;
-    font-weight: 500;
 }
