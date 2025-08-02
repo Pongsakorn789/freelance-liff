@@ -15,8 +15,8 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 .loader { text-align: center; padding: 20px; color: var(--text-secondary); }
 
 /* --- App & Page Control --- */
-.page, .app-container { display: none; }
-.page.active, .app-container.active { display: block; }
+.page, #client-app, #freelancer-app { display: none; }
+.page.active, #client-app.active, #freelancer-app.active { display: block; }
 #page-role-selection { display: block; }
 .page.active { animation: fadeIn 0.3s ease-in-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -45,14 +45,14 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 .bottom-nav button { background: none; border: none; color: var(--text-secondary); cursor: pointer; }
 .bottom-nav button.active { color: var(--primary-color); font-weight: 600; }
 
-/* --- Cards (Job & Freelancer) --- */
-.job-card, .freelancer-card {
+/* --- Cards (Job, Service, Freelancer) --- */
+.job-card, .freelancer-card, .service-card {
     background-color: var(--background-white); border-radius: 16px;
     padding: 20px; margin-bottom: 15px; border: 1px solid var(--border-color);
 }
 .job-card-header { display: flex; justify-content: space-between; align-items: center; }
 .job-card-header h3 { margin: 0; font-size: 18px; }
-.delete-job-btn {
+.delete-btn {
     background: none; border: none; color: var(--danger-color);
     font-size: 24px; cursor: pointer; font-weight: bold;
 }
@@ -117,4 +117,32 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     width: 100%; background-color: var(--primary-color); color: white;
     border: none; padding: 14px; border-radius: 8px; font-size: 16px;
     font-weight: bold; cursor: pointer;
+}
+
+/* --- Post Card (Home & Services) --- */
+.post-card {
+    background: linear-gradient(135deg, #06C755, #00B900);
+    color: white; padding: 25px; border-radius: 16px;
+    text-align: center; margin: 20px 0;
+    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
+}
+.post-card button {
+    background-color: var(--background-white); color: var(--primary-color);
+    border: none; padding: 12px 40px; border-radius: 25px;
+    font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px;
+}
+
+/* --- Chat Page --- */
+.chat-list { display: flex; flex-direction: column; gap: 10px; }
+.chat-item {
+    background-color: var(--background-white); border-radius: 16px;
+    padding: 15px; display: flex; align-items: center; gap: 15px;
+    border: 1px solid var(--border-color);
+}
+.chat-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+.chat-info { flex-grow: 1; }
+.contact-btn {
+    background-color: var(--primary-color); color: white; text-decoration: none;
+    padding: 8px 15px; border-radius: 20px; font-size: 14px;
+    border: none; cursor: pointer;
 }
