@@ -22,17 +22,8 @@ body {
     padding-bottom: 90px;
 }
 
-h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-h2 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
+h1 { font-size: 28px; font-weight: 700; color: var(--primary-color); }
+h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 
 /* --- Page Control --- */
 .page { display: none; }
@@ -55,7 +46,7 @@ h2 {
     box-sizing: border-box;
     text-align: center;
 }
-.main-logo { width: 60px; margin-bottom: 15px; }
+.main-logo-emoji { font-size: 60px; margin-bottom: 15px; }
 .role-container h1 { font-size: 24px; margin-bottom: 40px; }
 .brand-highlight {
     background-color: #e8e8e8;
@@ -74,14 +65,9 @@ h2 {
     max-width: 300px;
     margin-bottom: 20px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.role-button:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.2);
-}
-.role-button h2 { color: white; margin: 0 0 10px 0; font-weight: 600; }
-.role-button img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.5); }
+.role-button h2 { color: white; margin: 0 0 10px 0; }
+.role-emoji { font-size: 60px; }
 
 /* --- Bottom Navigation Bar --- */
 .bottom-nav {
@@ -94,129 +80,87 @@ h2 {
     justify-content: space-around;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
     padding: 10px 0;
-    padding-bottom: env(safe-area-inset-bottom); /* For iPhone X and newer */
+    padding-bottom: env(safe-area-inset-bottom);
     z-index: 1000;
 }
 .bottom-nav button {
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: color 0.2s ease;
+    background: none; border: none; font-size: 14px;
+    color: var(--text-secondary); cursor: pointer; padding: 5px 10px;
 }
-.bottom-nav button.active {
-    color: var(--primary-color);
-    font-weight: 600;
-}
+.bottom-nav button.active { color: var(--primary-color); font-weight: 600; }
 
 /* --- Search Page & Freelancer Card --- */
 .search-container { margin-bottom: 20px; }
 #search-box {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 16px;
-    border-radius: 25px;
-    border: 1px solid var(--border-color);
-    box-sizing: border-box;
-    background-color: var(--background-white);
+    width: 100%; padding: 14px 20px; font-size: 16px;
+    border-radius: 25px; border: 1px solid var(--border-color);
+    box-sizing: border-box; background-color: var(--background-white);
 }
 .freelancer-card {
-    background-color: var(--background-white);
-    border-radius: 16px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--border-color);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.freelancer-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    background-color: var(--background-white); border-radius: 16px;
+    padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex; align-items: center; border: 1px solid var(--border-color);
 }
 .freelancer-card img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
+    width: 60px; height: 60px; border-radius: 50%;
+    margin-right: 15px; object-fit: cover;
 }
-.freelancer-info h3 { margin: 0 0 5px 0; font-size: 18px; color: var(--text-primary); }
+.freelancer-info h3 { margin: 0 0 5px 0; font-size: 18px; }
 .freelancer-info p { margin: 0; font-size: 14px; color: var(--text-secondary); }
 .portfolio-btn {
-    display: inline-block;
-    margin-top: 10px;
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 14px;
+    display: inline-block; margin-top: 10px; text-decoration: none;
+    color: var(--primary-color); font-weight: 600; font-size: 14px;
 }
 
 /* --- Profile Page --- */
-.profile-header { text-align: center; padding: 20px 0; }
-#profile-picture {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid var(--background-white);
+#profile-display {
+    background-color: var(--background-white);
+    padding: 20px; text-align: center; border-radius: 16px;
+}
+#profile-display img {
+    width: 120px; height: 120px; border-radius: 50%;
+    object-fit: cover; border: 4px solid var(--background-white);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-#profile-name { margin-top: 15px; font-size: 24px; font-weight: 600; }
-.profile-section {
-    background-color: var(--background-white);
-    border-radius: 16px;
-    padding: 20px;
-    margin-top: 20px;
-    border: 1px solid var(--border-color);
-}
-.profile-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-
-/* --- Home / Jobboard Page --- */
-.post-card {
-    background: linear-gradient(135deg, #06C755, #00B900);
-    color: white;
-    padding: 25px;
-    border-radius: 16px;
-    text-align: center;
-    margin: 20px 0;
-    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
-}
-#post-job-button {
-    background-color: var(--background-white);
-    color: var(--primary-color);
-    border: none;
-    padding: 12px 40px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: transform 0.2s;
-}
-#post-job-button:hover { transform: scale(1.05); }
+#profile-display h2 { margin-top: 15px; font-size: 24px; font-weight: 600; }
+#profile-display p { word-wrap: break-word; color: var(--text-secondary); }
+#profile-display hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
 
 /* --- Chat Page --- */
+.chat-list { display: flex; flex-direction: column; gap: 10px; }
 .chat-item {
-    background-color: var(--background-white);
-    border-radius: 16px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    background-color: var(--background-white); border-radius: 16px;
+    padding: 15px; display: flex; align-items: center; gap: 15px;
     border: 1px solid var(--border-color);
 }
 .chat-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
 .chat-info { flex-grow: 1; }
 .contact-btn {
-    background-color: var(--primary-color);
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
+    background-color: var(--primary-color); color: white; text-decoration: none;
+    padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 500;
+    border: none; cursor: pointer;
+}
+/* Chat Room */
+.chat-room-header {
+    display: flex; align-items: center; gap: 15px;
+    padding-bottom: 15px; border-bottom: 1px solid var(--border-color);
+}
+.chat-room-header button { background: none; border: none; font-size: 24px; cursor: pointer; }
+.chat-room-header h2 { margin: 0; }
+.chat-messages { padding: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+.message {
+    padding: 10px 15px; border-radius: 20px; max-width: 70%;
+}
+.message.sent { background-color: var(--primary-color); color: white; align-self: flex-end; }
+.message.received { background-color: var(--background-white); color: var(--text-primary); align-self: flex-start; }
+.chat-input-area {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background-color: var(--background-white); padding: 15px;
+    display: flex; gap: 10px; box-sizing: border-box;
+    border-top: 1px solid var(--border-color);
+}
+.chat-input-area input { flex-grow: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 10px 15px; }
+.chat-input-area button {
+    background-color: var(--primary-color); color: white; border: none;
+    border-radius: 20px; padding: 10px 20px; font-weight: bold; cursor: pointer;
 }
