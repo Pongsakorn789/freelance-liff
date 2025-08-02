@@ -10,9 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     clientButton.addEventListener('click', () => {
         // --- แก้ไขโค้ดส่วนนี้ ---
-        // เปลี่ยนจากการใช้ style.display มาเป็นการลบ class 'active' แทน
-        // เพื่อให้ทำงานสอดคล้องกับ CSS
-        roleSelectionPage.classList.remove('active'); 
+        // เปลี่ยนไปใช้ style.display โดยตรงเพื่อความแน่นอน
+        roleSelectionPage.style.display = 'none';
         mainApp.style.display = 'block';
         // --- จบส่วนที่แก้ไข ---
         
@@ -31,6 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-to-chat-list').addEventListener('click', () => {
         navigateTo('page-chat');
     });
+
+    // ผูก event listener กับช่อง search
+    const searchBox = document.getElementById('search-box');
+    if (searchBox) {
+        searchBox.addEventListener('input', filterFreelancers);
+    }
 });
 
 function navigateTo(pageId) {
@@ -156,11 +161,3 @@ function openChatRoom(freelancerName) {
     document.getElementById('chat-with-name').innerText = freelancerName;
     navigateTo('page-chat-room');
 }
-
-// ผูก event listener กับช่อง search
-document.addEventListener('DOMContentLoaded', () => {
-    const searchBox = document.getElementById('search-box');
-    if (searchBox) {
-        searchBox.addEventListener('input', filterFreelancers);
-    }
-});
