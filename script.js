@@ -472,6 +472,7 @@ async function fetchMyWorkHistory() {
     }
 }
 
+
 async function handleCancelHiredJob(jobId) {
     if (!confirm("Are you sure you want to cancel this hired job? The job will become available for others to apply again.")) return;
 
