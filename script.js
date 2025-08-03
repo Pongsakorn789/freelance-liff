@@ -82,7 +82,6 @@ function navigateTo(pageId) {
         b.classList.toggle('active', b.dataset.page === pageId);
     });
 
-    // Fetch work history when freelancer navigates to their profile
     if (pageId === 'page-freelancer-profile') {
         fetchMyWorkHistory();
     }
@@ -109,7 +108,7 @@ async function handleJobPost(event) {
         clientPicture: currentUserProfile.pictureUrl, title: document.getElementById('job-title').value,
         description: document.getElementById('job-description').value, category: document.getElementById('job-category').value,
         budget: parseInt(document.getElementById('job-budget').value, 10), postDate: new Date().toISOString().split('T')[0],
-        status: 'open' // Initial status
+        status: 'open'
     };
     try {
         await firebase.database().ref('jobs').push(jobData);
@@ -184,18 +183,19 @@ async function showApplicants(jobId, jobTitle) {
 
         let applicantsHtml = '<h4>Applicants:</h4><div class="applicant-list">';
         Object.entries(applicants).forEach(([freelancerId, applicant]) => {
-            // Add all applicant data as data-* attributes for the hire function
-            applicantsHtml += `
-                <div class="applicant-item">
-                    <img src="${applicant.freelancerPicture}" alt="${applicant.freelancerName}">
-                    <span>${applicant.freelancerName}</span>
-                    <button class="contact-applicant-btn" data-freelancer-name="${applicant.freelancerName}" data-job-title="${jobTitle}">Contact</button>
-                    <button class="hire-btn" 
-                        data-job-id="${jobId}" 
-                        data-freelancer-id="${freelancerId}" 
-                        data-freelancer-name="${applicant.freelancerName}" 
-                        data-freelancer-picture="${applicant.freelancerPicture}">Hire</button>
-                </div>`;
+            if (applicant.status !== 'hired') { // Don't show hire button if someone is already hired
+                 applicantsHtml += `
+                    <div class="applicant-item">
+                        <img src="${applicant.freelancerPicture}" alt="${applicant.freelancerName}">
+                        <span>${applicant.freelancerName}</span>
+                        <button class="contact-applicant-btn" data-freelancer-name="${applicant.freelancerName}" data-job-title="${jobTitle}">Contact</button>
+                        <button class="hire-btn" 
+                            data-job-id="${jobId}" 
+                            data-freelancer-id="${freelancerId}" 
+                            data-freelancer-name="${applicant.freelancerName}" 
+                            data-freelancer-picture="${applicant.freelancerPicture}">Hire</button>
+                    </div>`;
+            }
         });
         applicantsHtml += '</div>';
         container.innerHTML = applicantsHtml;
@@ -223,9 +223,8 @@ async function showApplicants(jobId, jobTitle) {
 }
 
 async function handleHire(jobId, freelancerId, freelancerName, freelancerPicture) {
-    if (!confirm(`Are you sure you want to hire ${freelancerName} for this job? This will close the job to other applicants.`)) {
-        return;
-    }
+    if (!confirm(`Are you sure you want to hire ${freelancerName} for this job? This will close the job to other applicants.`)) return;
+    
     const updates = {};
     updates[`/jobs/${jobId}/status`] = 'assigned';
     updates[`/jobs/${jobId}/hiredFreelancerId`] = freelancerId;
@@ -236,7 +235,7 @@ async function handleHire(jobId, freelancerId, freelancerName, freelancerPicture
     try {
         await firebase.database().ref().update(updates);
         alert(`${freelancerName} has been hired!`);
-        fetchMyJobs(); // Refresh the job list
+        fetchMyJobs(); 
     } catch (error) {
         console.error("Failed to hire freelancer:", error);
         alert("Error: Could not complete the hiring process.");
@@ -274,7 +273,7 @@ async function fetchFreelancers() {
 function displayFreelancers(freelancers) {
     const listEl = document.getElementById('freelancer-list-client');
     listEl.innerHTML = '';
-    if (freelancers.length === 0) { listEl.innerHTML = '<p>No freelancers found. Tip: Freelancers appear here after they post a service.</p>'; return; }
+    if (freelancers.length === 0) { listEl.innerHTML = '<p>No freelancers found.</p>'; return; }
     freelancers.forEach(f => {
         const card = document.createElement('div');
         card.className = 'freelancer-card';
@@ -350,14 +349,11 @@ async function handleServiceDelete(serviceId) {
 
 async function fetchAllJobs() {
     const jobsSnapshot = await firebase.database().ref('jobs').once('value');
-    allJobs = jobsSnapshot.val() || {};
-    // Also fetch all of my applications to check status efficiently
-    const myAppsSnapshot = await firebase.database().ref('applications').orderByKey().once('value');
-    const myApps = myAppsSnapshot.val() || {};
-    displayAllJobs(allJobs, myApps);
+    const myAppsSnapshot = await firebase.database().ref('applications').once('value');
+    displayAllJobs(jobsSnapshot.val() || {}, myAppsSnapshot.val() || {});
 }
 
-function displayAllJobs(jobs, myApps) {
+function displayAllJobs(jobs, allApps) {
     const listEl = document.getElementById('all-jobs-list');
     listEl.innerHTML = '';
     if (Object.keys(jobs).length === 0) { listEl.innerHTML = "<p>No jobs available right now.</p>"; return; }
@@ -365,13 +361,12 @@ function displayAllJobs(jobs, myApps) {
     Object.entries(jobs).reverse().forEach(([jobId, job]) => {
         const card = document.createElement('div');
         card.className = 'job-card';
+        const myApplication = allApps[jobId] ? allApps[jobId][currentUserProfile.userId] : null;
 
         let actionButtonHtml = '';
-        const myApplication = myApps[jobId] ? myApps[jobId][currentUserProfile.userId] : null;
-
         if (job.status === 'assigned') {
             if (job.hiredFreelancerId === currentUserProfile.userId) {
-                actionButtonHtml = `<div class="application-status"><span>🎉 You were hired for this job!</span></div>`;
+                actionButtonHtml = `<div class="application-status"><span>🎉 You were hired!</span></div>`;
             } else {
                 actionButtonHtml = `<div class="application-status"><span>Job Closed</span></div>`;
             }
@@ -392,15 +387,8 @@ function displayAllJobs(jobs, myApps) {
             <div class="job-card-client-info"><img src="${job.clientPicture}" alt="${job.clientName}"><span>Posted by ${job.clientName}</span></div>
             ${actionButtonHtml}`;
 
-        const applyBtn = card.querySelector('.apply-btn');
-        if (applyBtn) {
-            applyBtn.addEventListener('click', (e) => handleJobApply(e, jobId));
-        }
-        const cancelBtn = card.querySelector('.cancel-apply-btn');
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', (e) => handleCancelApplication(e, jobId));
-        }
-
+        card.querySelector('.apply-btn')?.addEventListener('click', (e) => handleJobApply(e, jobId));
+        card.querySelector('.cancel-apply-btn')?.addEventListener('click', (e) => handleCancelApplication(e, jobId));
         listEl.appendChild(card);
     });
 }
@@ -409,7 +397,6 @@ async function handleJobApply(event, jobId) {
     const applyButton = event.target;
     applyButton.disabled = true;
     applyButton.textContent = 'Applying...';
-
     const applicationRef = firebase.database().ref(`applications/${jobId}/${currentUserProfile.userId}`);
 
     try {
@@ -420,7 +407,7 @@ async function handleJobApply(event, jobId) {
             status: 'applied'
         });
         alert("Application submitted successfully!");
-        fetchAllJobs(); // Refresh the list to show the "Cancel" button
+        fetchAllJobs();
     } catch (error) {
         console.error("Error applying for job:", error);
         alert("Failed to submit application.");
@@ -440,7 +427,7 @@ async function handleCancelApplication(event, jobId) {
     try {
         await applicationRef.remove();
         alert("Application cancelled.");
-        fetchAllJobs(); // Refresh the list
+        fetchAllJobs();
     } catch (error) {
         console.error("Error cancelling application:", error);
         alert("Failed to cancel application.");
@@ -459,14 +446,14 @@ async function fetchMyWorkHistory() {
         const myJobs = snapshot.val();
         
         if (!myJobs || Object.keys(myJobs).length === 0) {
-            historyListEl.innerHTML = "<p>You have no completed or hired jobs yet.</p>";
+            historyListEl.innerHTML = "<p>You have no hired jobs yet.</p>";
             return;
         }
 
         historyListEl.innerHTML = '';
-        Object.values(myJobs).reverse().forEach(job => {
+        Object.entries(myJobs).reverse().forEach(([jobId, job]) => {
             const card = document.createElement('div');
-            card.className = 'job-card'; // Reuse job-card style
+            card.className = 'job-card';
             card.innerHTML = `
                 <h3>${job.title}</h3>
                 <p class="job-card-category">${job.category}</p>
@@ -474,12 +461,34 @@ async function fetchMyWorkHistory() {
                 <div class="job-card-client-info" style="margin-top: 10px;">
                     <img src="${job.clientPicture}" alt="${job.clientName}">
                     <span>Hired by: <strong>${job.clientName}</strong></span>
-                </div>`;
+                </div>
+                <button class="cancel-hired-job-btn" data-job-id="${jobId}">Cancel Job</button>`;
+            card.querySelector('.cancel-hired-job-btn').addEventListener('click', () => handleCancelHiredJob(jobId));
             historyListEl.appendChild(card);
         });
-
     } catch(error) {
         console.error("Error fetching work history:", error);
         historyListEl.innerHTML = '<p>Could not load work history.</p>';
+    }
+}
+
+async function handleCancelHiredJob(jobId) {
+    if (!confirm("Are you sure you want to cancel this hired job? The job will become available for others to apply again.")) return;
+
+    const updates = {};
+    updates[`/jobs/${jobId}/status`] = 'open';
+    updates[`/jobs/${jobId}/hiredFreelancerId`] = null;
+    updates[`/jobs/${jobId}/hiredFreelancerName`] = null;
+    updates[`/jobs/${jobId}/hiredFreelancerPicture`] = null;
+    updates[`/applications/${jobId}/${currentUserProfile.userId}`] = null; // Remove the original application
+
+    try {
+        await firebase.database().ref().update(updates);
+        alert("You have successfully cancelled the job.");
+        fetchMyWorkHistory(); // Refresh the history list
+        fetchAllJobs(); // Refresh the main job board
+    } catch (error) {
+        console.error("Failed to cancel hired job:", error);
+        alert("Error: Could not cancel the job.");
     }
 }
