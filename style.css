@@ -209,6 +209,9 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 /* --- Append this to your existing style.css file --- */
 
 /* --- Hired Status & Applicant Buttons --- */
+/* --- Append this to your existing style.css file --- */
+
+/* --- Hired Status & Applicant Buttons --- */
 .applicant-item {
     position: relative;
 }
