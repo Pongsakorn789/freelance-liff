@@ -146,3 +146,63 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     padding: 8px 15px; border-radius: 20px; font-size: 14px;
     border: none; cursor: pointer;
 }
+
+/* --- Append this to your existing style.css file --- */
+
+/* --- Applicants Section (Client View) --- */
+.applicants-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+.view-applicants-btn {
+    background-color: #e8f8f0;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+.view-applicants-btn:hover {
+    background-color: #d4f4e3;
+}
+.applicant-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.applicant-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: var(--background-light);
+    border-radius: 8px;
+}
+.applicant-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.applicant-item span {
+    flex-grow: 1;
+    font-weight: 500;
+}
+.contact-applicant-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.apply-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
