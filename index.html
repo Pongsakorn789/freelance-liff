@@ -13,7 +13,6 @@
     </style>
 </head>
 <body>
-    <!-- หน้าเลือก Role -->
     <div id="page-role-selection" class="page active">
         <div class="role-container">
             <span class="main-logo-emoji">💬</span>
@@ -23,7 +22,6 @@
         </div>
     </div>
 
-    <!-- =============== แอปฝั่งผู้จ้าง (Client) =============== -->
     <div id="client-app">
         <main class="container">
             <div id="page-client-home" class="page active">
@@ -57,7 +55,6 @@
         </nav>
     </div>
 
-    <!-- =============== แอปฝั่งฟรีแลนซ์ (Freelancer) =============== -->
     <div id="freelancer-app">
         <main class="container">
             <div id="page-freelancer-home" class="page active">
@@ -76,18 +73,19 @@
             <div id="page-freelancer-chat" class="page">
                 <h1>Chats</h1>
                 <div id="chat-list-container-freelancer" class="chat-list"><p>No chats yet.</p></div>
+            </div>
             <div id="page-freelancer-profile" class="page">
-    <h1>My Profile</h1>
-    <section id="profile-display-freelancer"></section>
-    
-    <div id="work-history-container">
-        <h2>My Work History</h2>
-        <div id="work-history-list">
-            <div class="loader">Loading history...</div>
-        </div>
-    </div>
-    </div>
-        </main>
+                <h1>My Profile</h1>
+                <section id="profile-display-freelancer"></section>
+                
+                <div id="work-history-container">
+                    <h2>My Work History</h2>
+                    <div id="work-history-list">
+                        <div class="loader">Loading history...</div>
+                    </div>
+                </div>
+            </div>
+            </main>
         <nav class="bottom-nav" id="nav-freelancer">
             <button data-page="page-freelancer-home" class="active">🏠 Jobs</button>
             <button data-page="page-freelancer-services">✨ Services</button>
@@ -96,7 +94,6 @@
         </nav>
     </div>
 
-    <!-- Modal สำหรับโพสต์งาน -->
     <div id="post-job-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-button">&times;</button>
@@ -111,7 +108,6 @@
         </div>
     </div>
     
-    <!-- Modal สำหรับโพสต์บริการ -->
     <div id="post-service-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-button">&times;</button>
@@ -126,20 +122,19 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-      const firebaseConfig = {
-  apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
-  authDomain: "freelance-hackathon.firebaseapp.com",
-  databaseURL: "https://freelance-hackathon-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "freelance-hackathon",
-  storageBucket: "freelance-hackathon.firebasestorage.app",
-  messagingSenderId: "373560862804",
-  appId: "1:373560862804:web:92926446cdd9fd675f25c1"
-};
-      firebase.initializeApp(firebaseConfig);
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbhJnhmM-RnDwYxySO8ul7KWH1KWDK7QQ",
+            authDomain: "freelance-hackathon.firebaseapp.com",
+            databaseURL: "https://freelance-hackathon-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "freelance-hackathon",
+            storageBucket: "freelance-hackathon.firebasestorage.app",
+            messagingSenderId: "373560862804",
+            appId: "1:373560862804:web:92926446cdd9fd675f25c1"
+        };
+        firebase.initializeApp(firebaseConfig);
     </script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="script.js"></script>
