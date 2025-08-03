@@ -68,11 +68,6 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 }
 .job-card-client-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
 .job-card-client-info img { width: 30px; height: 30px; border-radius: 50%; }
-.apply-btn {
-    width: 100%; background-color: var(--primary-color); color: white;
-    border: none; padding: 12px; border-radius: 8px; font-size: 16px;
-    font-weight: bold; cursor: pointer; margin-top: 15px;
-}
 .freelancer-card { display: flex; align-items: center; }
 .freelancer-card img { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; }
 .freelancer-info h3 { margin: 0 0 5px 0; }
@@ -147,8 +142,6 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     border: none; cursor: pointer;
 }
 
-/* --- Append this to your existing style.css file --- */
-
 /* --- Applicants Section (Client View) --- */
 .applicants-section {
     margin-top: 15px;
@@ -182,6 +175,7 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     padding: 10px;
     background-color: var(--background-light);
     border-radius: 8px;
+    position: relative;
 }
 .applicant-item img {
     width: 40px;
@@ -202,19 +196,6 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     cursor: pointer;
     white-space: nowrap;
 }
-.apply-btn:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-}
-/* --- Append this to your existing style.css file --- */
-
-/* --- Hired Status & Applicant Buttons --- */
-/* --- Append this to your existing style.css file --- */
-
-/* --- Hired Status & Applicant Buttons --- */
-.applicant-item {
-    position: relative;
-}
 .hire-btn {
     background-color: #28a745; /* Green */
     color: white;
@@ -224,6 +205,12 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     font-size: 12px;
     cursor: pointer;
     margin-left: 5px;
+}
+
+/* --- Job & Application Status --- */
+.apply-btn:disabled, .cancel-apply-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
 }
 .job-status-assigned {
     background-color: #e8f8f0;
@@ -241,8 +228,6 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     height: 40px;
     border-radius: 50%;
 }
-
-/* --- Freelancer Application Status --- */
 .application-status {
     background-color: #f0f0f0;
     padding: 10px;
@@ -273,4 +258,16 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
 #work-history-list .job-card {
     background-color: #f5faff; /* A slightly different background */
     border-left: 4px solid var(--primary-color);
+}
+.cancel-hired-job-btn {
+    width: 100%;
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
 }
