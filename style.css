@@ -206,3 +206,68 @@ h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); }
     background-color: #aaa;
     cursor: not-allowed;
 }
+/* --- Append this to your existing style.css file --- */
+
+/* --- Hired Status & Applicant Buttons --- */
+.applicant-item {
+    position: relative;
+}
+.hire-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.job-status-assigned {
+    background-color: #e8f8f0;
+    color: var(--primary-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+}
+.job-status-assigned img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* --- Freelancer Application Status --- */
+.application-status {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.application-status span {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.cancel-apply-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* --- Freelancer Work History --- */
+#work-history-container {
+    margin-top: 25px;
+}
+#work-history-list .job-card {
+    background-color: #f5faff; /* A slightly different background */
+    border-left: 4px solid var(--primary-color);
+}
