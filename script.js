@@ -1,5 +1,5 @@
 // !!! สำคัญ: แก้เป็น LIFF ID ของคุณ !!!
-const liffId = "2007867348-RQ0pAK5j"; 
+const liffId = "2007867348-RQ0pAK5j";
 let allFreelancers = [], allJobs = {};
 let currentUserProfile = null;
 let currentRole = null; // 'client' or 'freelancer'
@@ -77,7 +77,7 @@ function setupEventListeners() {
 function navigateTo(pageId) {
     document.querySelectorAll(`#${currentRole}-app .page`).forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
-    
+
     document.querySelectorAll(`#${currentRole}-app .bottom-nav button`).forEach(b => {
         b.classList.toggle('active', b.dataset.page === pageId);
     });
@@ -91,7 +91,7 @@ async function getUserProfile() {
         <p><b>Status:</b> ${currentUserProfile.statusMessage || 'N/A'}</p><hr>
         <p><b>User ID:</b> ${currentUserProfile.userId}</p>
         <p><b>Email:</b> ${liff.getDecodedIDToken() ? liff.getDecodedIDToken().email : 'N/A'}</p>`;
-    
+
     const profileContainerId = `profile-display-${currentRole}`;
     document.getElementById(profileContainerId).innerHTML = profileHtml;
 }
@@ -137,16 +137,72 @@ function displayMyJobs(jobs) {
             <p class="job-card-category">${job.category}</p>
             <span>Budget: ${job.budget} THB</span>
             <p class="job-card-description">${job.description}</p>
-            <div class="job-card-footer">Posted on ${job.postDate}</div>`;
+            <div class="job-card-footer">Posted on ${job.postDate}</div>
+            <div class="applicants-section" id="applicants-container-${jobId}">
+                 <button class="view-applicants-btn" data-job-id="${jobId}">View Applicants</button>
+            </div>`;
         card.querySelector('.delete-btn').addEventListener('click', () => handleJobDelete(jobId));
+        card.querySelector('.view-applicants-btn').addEventListener('click', () => showApplicants(jobId));
         listEl.appendChild(card);
     });
 }
+
+async function showApplicants(jobId) {
+    const applicantsRef = firebase.database().ref(`applications/${jobId}`);
+    const container = document.getElementById(`applicants-container-${jobId}`);
+    container.innerHTML = `<div class="loader">Loading applicants...</div>`;
+
+    try {
+        const snapshot = await applicantsRef.once('value');
+        const applicants = snapshot.val();
+
+        if (!applicants) {
+            container.innerHTML = "<p>No applications for this job yet.</p>";
+            return;
+        }
+
+        let applicantsHtml = '<h4>Applicants:</h4><div class="applicant-list">';
+        Object.values(applicants).forEach(applicant => {
+            applicantsHtml += `
+                <div class="applicant-item">
+                    <img src="${applicant.freelancerPicture}" alt="${applicant.freelancerName}">
+                    <span>${applicant.freelancerName}</span>
+                    <button class="contact-applicant-btn" data-freelancer-name="${applicant.freelancerName}" data-job-title="${document.querySelector(`#applicants-container-${jobId}`).closest('.job-card').querySelector('h3').textContent}">Contact</button>
+                </div>
+            `;
+        });
+        applicantsHtml += '</div>';
+        container.innerHTML = applicantsHtml;
+
+        container.querySelectorAll('.contact-applicant-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                 const freelancerName = event.target.dataset.freelancerName;
+                 const jobTitle = event.target.dataset.jobTitle;
+                 if (liff.isApiAvailable('shareTargetPicker')) {
+                    liff.shareTargetPicker([
+                        { type: 'text', text: `Hello ${freelancerName}, I'd like to discuss the job "${jobTitle}" you applied for.` }
+                    ]).catch((error) => {
+                        console.error('Share Target Picker error:', error);
+                        alert('Could not open contact chooser.');
+                    });
+                 } else {
+                    alert('Contact feature not available. Please use your LINE app to contact this freelancer by name.');
+                 }
+            });
+        });
+    } catch (error) {
+        console.error("Error fetching applicants:", error);
+        container.innerHTML = "<p>Error loading applicants.</p>";
+    }
+}
+
 
 async function handleJobDelete(jobId) {
     if (confirm('Are you sure you want to delete this job post?')) {
         try {
             await firebase.database().ref('jobs/' + jobId).remove();
+            // Also delete related applications
+            await firebase.database().ref('applications/' + jobId).remove();
             alert('Job deleted successfully!');
             fetchMyJobs();
         } catch (error) { alert('Failed to delete job.'); console.error(error); }
@@ -154,16 +210,31 @@ async function handleJobDelete(jobId) {
 }
 
 async function fetchFreelancers() {
-    const snapshot = await firebase.database().ref('freelancers').once('value');
-    allFreelancers = Object.values(snapshot.val() || {});
+    const snapshot = await firebase.database().ref('services').once('value');
+    const services = snapshot.val() || {};
+    // Deduplicate freelancers based on ID
+    const freelancersMap = new Map();
+    Object.values(services).forEach(service => {
+        if (!freelancersMap.has(service.freelancerId)) {
+            freelancersMap.set(service.freelancerId, {
+                id: service.freelancerId,
+                name: service.freelancerName,
+                image_url: service.freelancerPicture,
+                skills: service.skills,
+                portfolio_url: service.portfolio_url
+            });
+        }
+    });
+    allFreelancers = Array.from(freelancersMap.values());
     displayFreelancers(allFreelancers);
     displayClientChats(allFreelancers);
 }
 
+
 function displayFreelancers(freelancers) {
     const listEl = document.getElementById('freelancer-list-client');
     listEl.innerHTML = '';
-    if (freelancers.length === 0) { listEl.innerHTML = '<p>No freelancers found.</p>'; return; }
+    if (freelancers.length === 0) { listEl.innerHTML = '<p>No freelancers found. Tip: Freelancers appear here after they post a service.</p>'; return; }
     freelancers.forEach(f => {
         const card = document.createElement('div');
         card.className = 'freelancer-card';
@@ -264,18 +335,65 @@ function displayAllJobs(jobs) {
     if (Object.keys(jobs).length === 0) {
         listEl.innerHTML = "<p>No jobs available right now.</p>"; return;
     }
-    Object.values(jobs).reverse().forEach(job => {
-        const card = document.createElement('div');
-        card.className = 'job-card';
-        card.innerHTML = `
-            <div class="job-card-header"><h3>${job.title}</h3><span>Budget: ${job.budget} THB</span></div>
-            <p class="job-card-category">${job.category}</p>
-            <p class="job-card-description">${job.description}</p>
-            <div class="job-card-client-info">
-                <img src="${job.clientPicture}" alt="${job.clientName}">
-                <span>Posted by ${job.clientName}</span>
-            </div>
-            <button class="apply-btn">Apply Now</button>`;
-        listEl.appendChild(card);
+
+    // Use Promise.all to check application status for all jobs at once
+    const jobEntries = Object.entries(jobs).reverse();
+    const applicationChecks = jobEntries.map(([jobId, job]) =>
+        firebase.database().ref(`applications/${jobId}/${currentUserProfile.userId}`).once('value')
+    );
+
+    Promise.all(applicationChecks).then(snapshots => {
+        jobEntries.forEach(([jobId, job], index) => {
+            const hasApplied = snapshots[index].exists();
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+                <div class="job-card-header"><h3>${job.title}</h3><span>Budget: ${job.budget} THB</span></div>
+                <p class="job-card-category">${job.category}</p>
+                <p class="job-card-description">${job.description}</p>
+                <div class="job-card-client-info">
+                    <img src="${job.clientPicture}" alt="${job.clientName}">
+                    <span>Posted by ${job.clientName}</span>
+                </div>
+                <button class="apply-btn" data-job-id="${jobId}" ${hasApplied ? 'disabled' : ''}>
+                    ${hasApplied ? 'Applied' : 'Apply Now'}
+                </button>`;
+
+            if (!hasApplied) {
+                card.querySelector('.apply-btn').addEventListener('click', (e) => handleJobApply(e, jobId));
+            }
+            listEl.appendChild(card);
+        });
     });
+}
+
+
+async function handleJobApply(event, jobId) {
+    const applyButton = event.target;
+    applyButton.disabled = true;
+    applyButton.textContent = 'Applying...';
+
+    if (!currentUserProfile) {
+        alert("Cannot get your profile. Please try again.");
+        applyButton.disabled = false;
+        applyButton.textContent = 'Apply Now';
+        return;
+    }
+    const applicationRef = firebase.database().ref(`applications/${jobId}/${currentUserProfile.userId}`);
+
+    try {
+        await applicationRef.set({
+            freelancerName: currentUserProfile.displayName,
+            freelancerPicture: currentUserProfile.pictureUrl,
+            applicationDate: new Date().toISOString()
+        });
+        alert("Application submitted successfully!");
+        applyButton.textContent = 'Applied';
+        // The button remains disabled
+    } catch (error) {
+        console.error("Error applying for job:", error);
+        alert("Failed to submit application.");
+        applyButton.disabled = false;
+        applyButton.textContent = 'Apply Now';
+    }
 }
